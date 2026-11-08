@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amy Huang 影像作品集</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Syne:wght@500;600&display=swap">
+<style>
+/* Layout: quiet dark gallery. Wordmark top-left, index grid of film frames, detail pages read like a production sheet. */
+:root {
+  --bg: #121110;
+  --surface: #1b1a18;
+  --fg: #ece8e1;
+  --muted: #8f8a81;
+  --line: #2c2a27;
+  --accent: #c9a46a;
+  --frame-ink: #f4efe6;
+  --font-display: "Syne", "Noto Sans TC", system-ui, sans-serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --wrap: 1180px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f3f3f1; --surface: #e8e7e3; --fg: #171614; --muted: #6c6862;
+    --line: #d9d7d2; --accent: #86652f; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f3f3f1; --surface: #e8e7e3; --fg: #171614; --muted: #6c6862;
+  --line: #d9d7d2; --accent: #86652f; color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  transition: background .3s, color .3s;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+:focus-visible { outline: 1.5px solid var(--accent); outline-offset: 3px; }
+
+.wrap {
+  max-width: calc(var(--wrap) + 64px); margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (min-width: 720px) { .wrap { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+
+/* header */
+header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 36px; }
+.mark { display: flex; align-items: center; gap: 12px; }
+.mark-box {
+  width: 34px; height: 34px; border: 1.5px solid currentColor; border-radius: 3px;
+  display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 15px;
+}
+.mark-text { display: grid; line-height: 1.15; }
+.mark-text strong { font-family: var(--font-display); font-weight: 500; font-size: 19px; letter-spacing: .06em; }
+.mark-text small { font-size: 10px; letter-spacing: .28em; color: var(--muted); }
+nav { display: flex; align-items: center; gap: 28px; font-size: 13px; letter-spacing: .12em; }
+nav a { color: var(--muted); transition: color .2s; }
+nav a:hover, nav a[aria-current="page"] { color: var(--fg); }
+.theme-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; color: var(--muted); }
+.theme-btn:hover { color: var(--fg); }
+.theme-btn svg { width: 16px; height: 16px; }
+@media (max-width: 560px) { nav { gap: 18px; } .mark-text small { display: none; } }
+
+/* page head */
+.eyebrow { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); display: flex; gap: 18px; flex-wrap: wrap; }
+.eyebrow b { color: var(--fg); font-weight: 500; }
+.page-head { padding-block: 64px 36px; display: grid; gap: 18px; }
+h1 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 500; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0; max-width: 62ch; }
+
+/* filters */
+.filters { display: flex; flex-wrap: wrap; gap: 6px 26px; padding-bottom: 40px; font-size: 13px; letter-spacing: .06em; }
+.filters button { color: var(--muted); padding-block: 4px; border-bottom: 1px solid transparent; transition: color .2s, border-color .2s; }
+.filters button:hover { color: var(--fg); }
+.filters button[aria-pressed="true"] { color: var(--fg); border-color: var(--accent); }
+.filters .n { font-family: var(--font-mono); font-size: 11px; margin-left: 6px; color: var(--muted); }
+
+/* grid */
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 60px 44px; padding-bottom: 120px; }
+@media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 52px 28px; } }
+@media (max-width: 620px) { .grid { grid-template-columns: minmax(0, 1fr); gap: 44px; } }
+.card { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.card .frame img { transition: transform .6s ease, filter .4s; }
+.card:hover .frame img { transform: scale(1.03); filter: brightness(1.08); }
+.card:hover .frame .play { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.meta-line { font-size: 13px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+.meta-line .yr, .tc { font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; }
+.card h2 { font-size: 16px; font-weight: 500; margin: 4px 0 0; line-height: 1.6; text-wrap: pretty; }
+.card:hover h2 { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.empty { color: var(--muted); padding-block: 40px 140px; }
+
+/* frames */
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background: var(--surface); }
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.frame.vert { aspect-ratio: 9 / 16; }
+.play {
+  position: absolute; left: 50%; top: 50%; z-index: 3; width: 56px; height: 56px; border-radius: 50%;
+  border: 1.5px solid var(--frame-ink); display: grid; place-items: center; color: var(--frame-ink);
+  background: rgb(0 0 0 / .3); backdrop-filter: blur(3px);
+  opacity: 0; transform: translate(-50%, -50%) scale(.9); transition: opacity .3s, transform .3s;
+}
+.play svg { width: 18px; height: 18px; margin-left: 3px; }
+.badge { position: absolute; z-index: 2; font-family: var(--font-mono); font-size: 11px; color: var(--frame-ink); text-shadow: 0 1px 6px rgb(0 0 0 / .6); }
+.badge.dur { right: 12px; bottom: 10px; }
+.badge.kind { left: 12px; top: 10px; font-family: var(--font-body); font-size: 10px; letter-spacing: .2em; }
+
+/* detail */
+.back { display: inline-flex; gap: 10px; align-items: center; font-size: 13px; color: var(--muted); letter-spacing: .06em; padding-top: 24px; }
+.back:hover { color: var(--fg); }
+.hero { margin-top: 28px; display: grid; gap: 12px; }
+.hero .frame .play { opacity: 1; transform: translate(-50%, -50%) scale(1); width: 76px; height: 76px; }
+.hero button.frame { width: 100%; padding: 0; cursor: pointer; }
+.hero button.frame:hover img { filter: brightness(1.08); }
+.hero iframe, .hero video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
+.hero .player { background: #000; }
+.hero a.frame:hover img { filter: brightness(1.08); }
+.badge.yt { left: 50%; bottom: 14px; transform: translateX(-50%); font-family: var(--font-body); font-size: 12px; letter-spacing: .06em; }
+.split { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 56px; align-items: start; }
+.split .detail { padding-top: 28px; }
+@media (max-width: 860px) { .split { grid-template-columns: minmax(0, 1fr); gap: 0; } .split .hero { max-width: 380px; width: 100%; margin-inline: auto; } .split .detail { padding-top: 44px; } }
+.versions a { border-bottom: 1px solid var(--muted); }
+.versions a:hover { border-color: var(--fg); }
+.hero-meta { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.hero-meta a { border-bottom: 1px solid var(--muted); }
+.hero-meta a:hover { color: var(--fg); border-color: var(--fg); }
+.detail { display: grid; gap: 28px; padding-block: 52px 40px; max-width: 780px; }
+.detail h1 { font-size: clamp(22px, 2.8vw, 28px); }
+.facts { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 6px 24px; margin: 0; font-size: 14px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; min-width: 0; }
+.facts .tags { display: flex; gap: 14px; flex-wrap: wrap; }
+.facts .tags button { border-bottom: 1px solid var(--muted); }
+.facts .tags button:hover { border-color: var(--fg); }
+.summary { margin: 0; max-width: 62ch; font-size: 15.5px; line-height: 1.95; }
+.rights { margin: 0; font-size: 12.5px; color: var(--muted); max-width: 62ch; }
+.versions { list-style: none; margin: 0; padding: 0; max-width: 780px; }
+.versions li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding-block: 12px; border-top: 1px solid var(--line); font-size: 14px; }
+.versions li:last-child { border-bottom: 1px solid var(--line); }
+.versions li span:last-child { color: var(--muted); }
+.block-h { margin: 0 0 16px; font-size: 13px; letter-spacing: .24em; font-weight: 700; }
+.section { padding-bottom: 44px; }
+.stills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.stills.vert { max-width: 760px; }
+@media (max-width: 620px) { .stills:not(.vert) { grid-template-columns: minmax(0, 1fr); } .stills.vert { gap: 8px; } }
+.photos { columns: 3 260px; column-gap: 16px; }
+.photos .frame { break-inside: avoid; margin-bottom: 16px; aspect-ratio: auto; }
+.photos .frame img { height: auto; }
+.note { border-top: 1px solid var(--line); padding-top: 34px; max-width: 780px; display: grid; gap: 14px; margin-bottom: 40px; }
+.note h3 { margin: 0; font-size: 13px; letter-spacing: .24em; font-weight: 700; }
+.note p { margin: 0; max-width: 62ch; opacity: .9; line-height: 1.95; }
+blockquote { margin: 0 0 44px; padding: 4px 0 4px 22px; border-left: 2px solid var(--accent); max-width: 760px; }
+blockquote p { margin: 0; font-size: clamp(17px, 2vw, 20px); line-height: 1.8; text-wrap: pretty; }
+blockquote footer { margin-top: 10px; font-size: 13px; color: var(--muted); }
+.pager { border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding-block: 36px 110px; margin-top: 20px; }
+.pager a { display: grid; gap: 4px; min-width: 0; }
+.pager a:last-child { text-align: right; }
+.pager small { font-size: 11px; letter-spacing: .22em; color: var(--muted); }
+.pager span { font-size: 14px; }
+.pager a:hover span { text-decoration: underline; text-underline-offset: 4px; }
+
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 72px; padding-bottom: 120px; }
+@media (max-width: 860px) { .about { grid-template-columns: minmax(0, 1fr); gap: 48px; } }
+.about .lead { font-size: clamp(20px, 2.4vw, 26px); line-height: 1.6; margin: 0; text-wrap: balance; }
+.about section { display: grid; gap: 14px; }
+.about section + section { margin-top: 44px; }
+.about h3 { margin: 0; font-size: 11px; letter-spacing: .28em; color: var(--muted); font-weight: 500; }
+.about p { margin: 0; max-width: 58ch; }
+.rows { list-style: none; padding: 0; margin: 0; display: grid; }
+.rows li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; border-top: 1px solid var(--line); padding-block: 13px; }
+.rows li:last-child { border-bottom: 1px solid var(--line); }
+.rows li span { color: var(--muted); font-size: 13px; text-align: right; }
+.steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 8px; counter-increment: s; }
+.steps li::before { content: counter(s, decimal-leading-zero); font-family: var(--font-mono); font-size: 12px; color: var(--accent); padding-top: 3px; }
+.steps b { font-weight: 500; }
+.steps small { display: block; color: var(--muted); font-size: 13px; }
+.skills { font-size: 14px; color: var(--muted); line-height: 2; }
+.contact { display: grid; margin: 0; }
+.contact-row { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr) auto; gap: 12px; align-items: center; padding-block: 10px; border-top: 1px solid var(--line); }
+.contact-row:last-child { border-bottom: 1px solid var(--line); }
+.contact-row dt { color: var(--muted); font-size: 13px; }
+.contact-row dd { margin: 0; overflow-wrap: anywhere; }
+.contact-row dd a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.copy { font-size: 12px; color: var(--muted); letter-spacing: .08em; }
+.copy:hover { color: var(--fg); }
+.hint { font-size: 13px; color: var(--muted); }
+
+footer.site { border-top: 1px solid var(--line); }
+footer.site .wrap { display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; padding-block: 28px; font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+
+#view { animation: fade .45s ease both; }
+@keyframes fade { from { opacity: .4; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #view { animation: none; } * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="#" class="mark" aria-label="回到作品列表">
+      <span class="mark-box" id="mark-initial">A</span>
+      <span class="mark-text"><strong id="mark-name">AMY HUANG</strong><small id="mark-sub">影像紀實 · FILM</small></span>
+    </a>
+    <nav>
+      <a href="#" data-nav="index">作品</a>
+      <a href="#about" data-nav="about">關於</a>
+      <button class="theme-btn" id="theme-btn" type="button" aria-label="切換深色或淺色">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.3"/><path d="M8 1.7a6.3 6.3 0 0 1 0 12.6z" fill="currentColor"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="view"></main>
+
+<footer class="site">
+  <div class="wrap">
+    <span id="foot-name"></span>
+    <span>部分作品為前公司或合作團隊專案，影像與品牌權利屬原單位與客戶，僅作作品集展示。</span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   1. 基本資料
+   ============================================================ */
+const SITE = {
+  name: "AMY HUANG",
+  nameZh: "黃千瑜",
+  sub: "影像紀實 · FILM",
+  intro: "黃千瑜 Amy，影像紀實創作者。拍農業紀實、人物訪談、品牌形象與活動紀錄，從腳本、拍攝到剪接一人完成。",
+  email: "amy19900706@gmail.com",
+  instagram: { label: "@amy.film_tw", url: "https://www.instagram.com/amy.film_tw/" },
+  youtube: { label: "@千瑜AmyHuang", url: "https://www.youtube.com/@%E5%8D%83%E7%91%9CAmyHuang" }
+};
+
+/* 篩選列會顯示的分類（照這個順序；沒有作品的分類會自動隱藏） */
+const TAGS = ["短影音", "農業紀實", "人物訪談", "品牌形象", "活動紀錄", "空拍", "攝影"];
+
+/* ============================================================
+   2. 作品：一件作品一個 { }
+   ------------------------------------------------------------
+   type:    "video" 影片 / "photo" 攝影
+   cover:   列表縮圖（16:9）
+   video:   放在 videos/ 資料夾的影片檔，作品頁直接播放；poster 是播放前的封面
+   vertical: true 代表直式 9:16（短影音）
+   youtube: YouTube 影片 ID（網址 v= 後面那串）
+   year:    不確定可以留 null，會排在最後
+   versions: 交付版本 [名稱, 片長, 連到哪件作品的 id（可省略）]
+   images:  攝影作品的照片
+   quote:   受訪者金句 { text, by }
+   notes:   製作筆記 [{ h: 標題, p: [段落...] }]
+   rights:  權利說明（前公司 / 合作專案）
+   ============================================================ */
+const PRIOR = "前公司專案（鮮之路）。影像與品牌權利屬原單位，僅作作品集展示。";
+
+const WORKS = [
+  {
+    id: "xinhui-brand", type: "video", year: 2026,
+    client: "心洄", title: "心洄《品牌形象篇》品牌形象影片",
+    tags: ["品牌形象"],
+    role: "拍攝、剪接",
+    spec: "4K · 23.976p · 16:9", duration: "0:57",
+    cover: "images/xinhui.jpg",
+    video: "videos/xinhui-brand.mp4", poster: "images/xinhui-poster.jpg",
+    summary: "替設計團隊心洄拍攝的品牌形象影片，以品牌理念和工作現場為主軸：場地佈置、和客戶討論、把設計一張一張貼進真實空間。2026 年 6 月完成，片長 57 秒。",
+    notes: [
+      { h: "剪接重點", p: [
+        "不拍成果展示，拍做事的過程。片中字卡「我們設計的，從來不只是畫面」「每一個細節，都有存在的理由」「美感，必須能被執行」，每一句都對到一個工作中的畫面，讓觀眾從動作理解這個團隊在意什麼。"
+      ]}
+    ]
+  },
+  {
+    id: "coffee-cupping", type: "video", year: 2026,
+    client: "心洄團隊", title: "台南東山農會咖啡評鑑 活動紀錄",
+    tags: ["活動紀錄"],
+    role: "現場拍攝、剪接",
+    spec: "4K · 23.976p · 16:9", duration: "1:35",
+    cover: "images/coffee-cupping.jpg",
+    video: "videos/coffee-cupping.mp4", poster: "images/coffee-cupping-poster.jpg",
+    summary: "記錄 2026 臺南市國產精品咖啡評鑑暨分享媒合推廣活動。從活動佈置、現場杯測體驗到媒合競標，整理成 1 分 35 秒的活動紀錄，作為活動成果與品牌宣傳素材。",
+    notes: [
+      { h: "剪接重點", p: [
+        "片子分成三段：活動佈置、咖啡杯測體驗、媒合競標。每段用中英雙語字卡開頭，沒到現場的人也能跟上活動流程。"
+      ]}
+    ]
+  },
+  {
+    id: "dongshan-coffee", type: "video", year: 2026,
+    client: "心洄", title: "台南東山咖啡推廣短影片｜人物 × 品牌故事",
+    tags: ["短影音", "品牌形象", "人物訪談"],
+    role: "腳本規劃、拍攝、剪接",
+    spec: "4K · 29.97p · 直式 9:16", duration: "1:04",
+    cover: "images/dongshan-coffee-card.jpg",
+    video: "videos/dongshan-coffee.mp4", poster: "images/dongshan-coffee-poster.jpg", vertical: true,
+    summary: "替心洄拍攝的東山咖啡推廣短片。主持人行恩走訪東山咖啡，和店長聊品牌故事、烘豆特色與在地文化。2026 年 6 月拍攝，剪成 1 分 04 秒直式影片，給 Reels 和短影音平台使用。",
+    notes: [
+      { h: "剪接重點", p: [
+        "把烘豆知識拆成觀眾記得住的短句，搭配中英雙語字卡，例如「水洗、蜜處理、日曬」「每一道工序，都影響最終風味」。結尾留給來客試喝的真實反應，讓品牌故事落在一杯咖啡上。"
+      ]}
+    ]
+  },
+  {
+    id: "bio-asia-2024", type: "video", year: 2024,
+    client: "個人接案", title: "2024 亞洲生技大展 Bio Asia–Taiwan 展會紀錄",
+    tags: ["活動紀錄"],
+    role: "腳本、拍攝、剪接、後製",
+    cover: "images/yt-e2cLxPaeOgY.jpg", youtube: "e2cLxPaeOgY",
+    summary: "2024 年 7 月在台北南港展覽館一館舉辦的亞洲生技大展現場紀錄。"
+  },
+  {
+    id: "tourism-queen-2023", type: "video", year: 2023,
+    client: "2023 國際旅遊夫人選美", title: "國際旅遊夫人選美 台灣代表南秀圓 宣傳影片",
+    tags: ["人物訪談"],
+    role: "腳本、拍攝、剪接、後製",
+    cover: "images/yt-4j9jBTw4vUg.jpg", youtube: "4j9jBTw4vUg",
+    summary: "替 2023 國際旅遊夫人選美（Mrs Tourism Queen International）台灣代表南秀圓拍攝的宣傳影片，帶她走進台灣街景，推廣台灣觀光。"
+  },
+  {
+    id: "open-house-taipei-2023", type: "photo", year: 2023,
+    client: "打開台北", title: "2023 打開台北 活動攝影｜華山望北茶亭・化南新村",
+    tags: ["攝影", "活動紀錄"],
+    role: "攝影",
+    cover: "images/hs1.jpg",
+    images: ["images/hs1.jpg", "images/hs3.jpg", "images/hn2.jpg", "images/hs2.jpg", "images/hs4.jpg", "images/hn3.jpg", "images/hs5.jpg", "images/hn1.jpg", "images/hs6.jpg", "images/hn4.jpg"],
+    summary: "2023 年「打開台北」活動的現場攝影，拍了兩個場次：華山文創園區的望北茶亭，以及化南新村與道南新村。記錄導覽中的人、老建築的細節，和參與者舉起手機拍照的瞬間。"
+  },
+  {
+    id: "jinchuan-farm", type: "video", year: 2022,
+    client: "鮮之路 YouTube 頻道", title: "金川農園｜農友訪談紀錄",
+    tags: ["農業紀實", "人物訪談"],
+    role: "腳本規劃、現場拍攝、剪接、調光、字幕",
+    duration: "10:43",
+    cover: "images/yt-MYW5ckUN2gI.jpg", youtube: "MYW5ckUN2gI",
+    summary: "訪問金川農園主人小敦，聊果園經營與病蟲害改善經驗。透過訪談與實際種植畫面，傳達農園重視友善環境、降低農藥使用的理念。",
+    notes: [
+      { h: "剪接重點", p: [
+        "用慢節奏、偏紀錄片的敘事，以訪談當主軸，搭配果園環境的 B-roll，讓資訊有層次，也更可信。"
+      ]}
+    ],
+    rights: PRIOR
+  },
+  {
+    id: "zhuolan-dream-farm", type: "video", year: null,
+    client: "鮮之路 YouTube 頻道", title: "苗栗卓蘭夢想有機莊園｜甘露梨果園訪談",
+    tags: ["農業紀實", "人物訪談"],
+    role: "腳本規劃、現場拍攝、剪接、調光、字幕",
+    duration: "5:27",
+    cover: "images/yt-Dj1h2JarBBQ.jpg", youtube: "Dj1h2JarBBQ",
+    versions: [["YouTube 訪談長片", "5:27"], ["IG Reels 成果短片（9:16）", "0:28", "zhuolan-reels"]],
+    summary: "訪問農園主人李大哥，聊甘露梨果園經營與病蟲害改善經驗。同一批素材剪成兩個版本：YouTube 訪談長片，和給 IG Reels 的 30 秒成果短片。",
+    quote: { text: "前期螞蟻、介殼都很嚴重，用了半年多後，目前樹上幾乎沒有介殼、也沒有螞蟻。", by: "李大哥，夢想有機莊園" },
+    notes: [
+      { h: "長片：紀錄片式敘事", p: [
+        "著重金句挑選、情緒轉折與資訊層次安排，搭配果園現場 B-roll，保留真實感。"
+      ]},
+      { h: "短版：30 秒講清楚成果", p: [
+        "用「問題 → 時間 → 結果」的結構，保留農友證詞的可信度，再用果園 B-roll 佐證、推進節奏，讓觀眾在 30 秒內看懂重點。"
+      ]}
+    ],
+    rights: PRIOR
+  },
+  {
+    id: "shuangxi-yam", type: "video", year: null,
+    client: "鮮之路 YouTube 頻道", title: "雙溪山藥郎｜原生種山藥農友訪談",
+    tags: ["農業紀實", "人物訪談"],
+    role: "腳本規劃、現場拍攝、剪接、調光、字幕",
+    duration: "2:08",
+    cover: "images/yt-07DIeHQktKc.jpg", youtube: "07DIeHQktKc",
+    versions: [["YouTube 訪談", "2:08"], ["IG Reels 成果短片（9:16）", "0:19", "shuangxi-yam-reels"]],
+    summary: "訪問山藥冠軍葉俊郎班長，聊山藥種植歷程與病蟲害改善經驗。素材分好幾次拍攝，最後以收成成果當主體，另剪一支 19 秒的 Reels。",
+    quote: { text: "以前線蟲會讓表皮黑化，這次採收的山藥白的就是白，幾乎沒有外觀問題。", by: "葉俊郎，雙溪山藥郎" },
+    notes: [
+      { h: "剪接重點", p: [
+        "分次拍攝的素材，以「最終收成成果」為主體，保留農友真實的反應和現場情緒。",
+        "短版用「有效 → 問題（線蟲黑化）→ 結果（白的就是白）」的節奏剪進 20 秒內，搭配山藥表皮與切面近拍，讓人一眼看懂賣相的價值。"
+      ]}
+    ],
+    rights: PRIOR
+  },
+  {
+    id: "fanshuteng-aerial", type: "video", year: null,
+    client: "桃園大溪 蕃薯藤", title: "飛閱桃園大溪 蕃薯藤專賣店｜園區空拍",
+    tags: ["空拍", "農業紀實"],
+    role: "腳本、空拍、剪接、後製",
+    spec: "DJI Air 2S",
+    cover: "images/yt-C_b2QnRPR5M.jpg", youtube: "C_b2QnRPR5M",
+    versions: [["YouTube 園區空拍", ""], ["IG Reels 短版（9:16）", "0:31", "fanshuteng-reels"]],
+    summary: "用空拍介紹桃園大溪蕃薯藤的園區樣貌，另剪一支 30 秒直式短版給社群使用。",
+    notes: [
+      { h: "剪接重點", p: [
+        "沒有旁白，用「全貌 → 動線 → 核心區」三段整理場域資訊，搭配簡單的文字標註（田區分布、入口到核心區、主要設施）。節奏乾淨、偏商業呈現，適合在 Reels 快速看懂。"
+      ]}
+    ],
+    rights: PRIOR
+  },
+  {
+    id: "zhuolan-reels", type: "video", year: null,
+    client: "鮮之路 IG", title: "卓蘭夢想有機莊園 甘露梨｜IG Reels 成果短片",
+    tags: ["短影音", "農業紀實"],
+    role: "剪接、節奏整理、字幕、基礎調色、版本輸出",
+    spec: "1080 × 1920 · 直式 9:16", duration: "0:28",
+    cover: "images/zhuolan-reels-card.jpg",
+    video: "videos/zhuolan-reels.mp4", poster: "images/zhuolan-reels-poster.jpg", vertical: true,
+    summary: "從甘露梨果園訪談長片剪出的 IG Reels 成果短片，用 30 秒把農友的使用成果說清楚、建立信任。",
+    quote: { text: "前期螞蟻、介殼都很嚴重，用了半年多後，目前樹上幾乎沒有介殼、也沒有螞蟻。", by: "李大哥，夢想有機莊園" },
+    versions: [["完整訪談（YouTube）", "5:27", "zhuolan-dream-farm"]],
+    notes: [
+      { h: "剪接重點", p: [
+        "用「問題 → 時間 → 結果」的成果敘事，保留農友證詞的可信度，再用果園現場 B-roll 佐證、推進節奏。字幕放大置中，關掉聲音也看得懂。"
+      ]}
+    ],
+    rights: PRIOR
+  },
+  {
+    id: "shuangxi-yam-reels", type: "video", year: null,
+    client: "鮮之路 IG", title: "雙溪山藥郎 原生種山藥｜IG Reels 成果短片",
+    tags: ["短影音", "農業紀實"],
+    role: "剪接、節奏整理、字幕、基礎調色、版本輸出",
+    spec: "1080 × 1920 · 直式 9:16", duration: "0:19",
+    cover: "images/shuangxi-yam-reels-card.jpg",
+    video: "videos/shuangxi-yam-reels.mp4", poster: "images/shuangxi-yam-reels-poster.jpg", vertical: true,
+    summary: "更短、更快的版本：19 秒內讓觀眾第一眼就懂成果在哪裡。",
+    quote: { text: "以前線蟲會讓表皮黑化，這次採收的山藥白的就是白，幾乎沒有外觀問題。", by: "葉俊郎，雙溪山藥郎" },
+    versions: [["完整訪談（YouTube）", "2:08", "shuangxi-yam"]],
+    notes: [
+      { h: "剪接重點", p: [
+        "以「有效（鉤子）→ 問題（線蟲讓表皮黑化）→ 結果（白的就是白）」的節奏剪進 20 秒內，搭配山藥表皮與切面近拍，讓人看懂賣相的價值。"
+      ]}
+    ],
+    rights: PRIOR
+  },
+  {
+    id: "fanshuteng-reels", type: "video", year: null,
+    client: "桃園大溪 蕃薯藤", title: "蕃薯藤園區空拍｜IG Reels 短版",
+    tags: ["短影音", "空拍"],
+    role: "空拍、剪接、文字標註、版本輸出",
+    spec: "DJI Air 2S · 直式 9:16", duration: "0:31",
+    cover: "images/fanshuteng-reels-card.jpg",
+    video: "videos/fanshuteng-reels.mp4", poster: "images/fanshuteng-reels-poster.jpg", vertical: true,
+    summary: "把園區空拍剪成 30 秒直式短版，讓沒去過的人在 Reels 上快速看懂園區配置。",
+    versions: [["YouTube 園區空拍", "", "fanshuteng-aerial"]],
+    notes: [
+      { h: "剪接重點", p: [
+        "沒有旁白，用「全貌 → 動線 → 核心區」整理場域資訊。每個鏡頭配一行標註，例如「動線｜入口 → 停車場」「水池生態保育區｜主要設施」，節奏乾淨，偏商業呈現。"
+      ]}
+    ],
+    rights: PRIOR
+  },
+  {
+    id: "farm-talk", type: "video", year: null,
+    client: "前公司／合作團隊", title: "友善無毒農業大溪講座｜精華剪輯",
+    tags: ["活動紀錄"],
+    role: "剪接、段落整理、B-roll 整合、字幕與重點字卡、基礎聲音整理",
+    spec: "16:9", duration: "1:44",
+    cover: "images/farm-talk.jpg",
+    video: "videos/farm-talk.mp4", poster: "images/farm-talk.jpg",
+    summary: "把一場實體農業講座（友善農物銷售心法與活菌應用）剪成 1 分 44 秒精華短片，用於社群宣傳和活動、產品認知。",
+    notes: [
+      { h: "剪接重點", p: [
+        "用「重點句＋情境 B-roll」把講座內容濃縮成能快速理解的精華，從入場報到、講座重點、試吃到結尾交流，用字卡標出段落。"
+      ]}
+    ],
+    rights: "前公司／合作團隊專案。影像與品牌權利屬原單位，僅作作品集展示。"
+  },
+  {
+    id: "qiji-strawberry", type: "video", year: null,
+    client: "鮮之路 YouTube 頻道", title: "其吉有機草莓農園｜農田訪問・農友老實說",
+    tags: ["農業紀實", "人物訪談"],
+    role: "腳本、拍攝、剪接、後製",
+    cover: "images/yt-fPeysNUyWpE.jpg", youtube: "fPeysNUyWpE",
+    summary: "《農田訪問｜農友老實說》系列之一，請其吉有機草莓農園的農友分享使用天然資材的心得。",
+    rights: PRIOR
+  },
+  {
+    id: "taiyen-salt", type: "photo", year: null,
+    client: "台鹽", title: "台鹽「鹽如玉」鹽雕藝品 商品攝影",
+    tags: ["攝影"],
+    role: "攝影、修圖",
+    cover: "images/salt8.jpg",
+    images: ["images/salt8.jpg", "images/salt1.jpg", "images/salt2.jpg", "images/salt3.jpg", "images/salt4.jpg", "images/salt5.jpg", "images/salt6.jpg", "images/salt7.jpg", "images/salt9.jpg"],
+    summary: "台鹽「鹽如玉」系列鹽雕藝品的商品攝影。每件作品經過原型設計、精雕、鑄模、研磨、彩繪等十多道工序，拍攝重點放在晶瑩的材質感和彩繪細節，交付 1000×1000 的電商商品圖。"
+  }
+];
+</script>
+
+<script>
+/* ============================================================
+   下面是網站運作的程式，一般不需要修改
+   ============================================================ */
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const view = document.getElementById("view");
+const PLAY = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9.5-5.5z"/></svg>';
+/* 預覽頁（被嵌在別的頁面裡）不能嵌入 YouTube，改成開新分頁播放；架在自己網站上就直接嵌入 */
+const CAN_EMBED = (() => { try { return window.self === window.top; } catch (e) { return false; } })();
+const sorted = () => WORKS.map((w, i) => [w, i]).sort((a, b) => ((b[0].year || 0) - (a[0].year || 0)) || (a[1] - b[1])).map(x => x[0]);
+let filter = "all";
+
+function card(w) {
+  const vid = w.type === "video";
+  return `<a class="card" href="#w-${esc(w.id)}">
+    <div class="frame">
+      <img src="${esc(w.cover)}" alt="${esc(w.title)}" loading="lazy">
+      ${vid ? `<span class="play">${PLAY}</span>` : `<span class="badge kind">PHOTO · ${(w.images || []).length}</span>`}
+      ${w.vertical ? `<span class="badge kind">9:16</span>` : ""}
+      ${w.duration ? `<span class="badge dur">${esc(w.duration)}</span>` : ""}
+    </div>
+    <div>
+      <div class="meta-line">${w.year ? `<span class="yr">${w.year}</span>` : ""}<span>${esc(w.client)}</span></div>
+      <h2>${esc(w.title)}</h2>
+    </div>
+  </a>`;
+}
+
+function renderIndex() {
+  const groups = [["all", "全部"], ...TAGS.map(t => [t, t])];
+  const list = sorted().filter(w => filter === "all" || (w.tags || []).includes(filter));
+  view.innerHTML = `
+    <div class="page-head">
+      <div class="eyebrow"><span>${esc(SITE.name)}</span><b>INDEX</b></div>
+      <h1>全部作品</h1>
+      <p class="lede">${esc(SITE.intro)}精選 ${WORKS.length} 件。</p>
+    </div>
+    <div class="filters" role="group" aria-label="依分類篩選作品">
+      ${groups.map(([k, label]) => {
+        const n = k === "all" ? WORKS.length : WORKS.filter(w => (w.tags || []).includes(k)).length;
+        return n ? `<button type="button" data-filter="${esc(k)}" aria-pressed="${filter === k}">${esc(label)}<span class="n">${n}</span></button>` : "";
+      }).join("")}
+    </div>
+    ${list.length ? `<div class="grid">${list.map(card).join("")}</div>` : `<p class="empty">這個分類還沒有作品。</p>`}
+  `;
+  view.querySelectorAll("[data-filter]").forEach(b => b.addEventListener("click", () => setFilter(b.dataset.filter, false)));
+}
+
+function setFilter(f, go) {
+  filter = f;
+  try { sessionStorage.setItem("pf-filter", filter); } catch (e) {}
+  if (go && location.hash) { location.hash = ""; } else { renderIndex(); }
+}
+
+function renderWork(w) {
+  const list = sorted();
+  const i = list.indexOf(w);
+  const prev = list[i - 1], next = list[i + 1];
+  const vid = w.type === "video";
+
+  let hero = "";
+  const durMeta = w.duration ? `<span>片長 <span class="tc">${esc(w.duration)}</span></span>` : "<span></span>";
+  if (vid && w.video) {
+    hero = `<div class="frame player${w.vertical ? " vert" : ""}">
+        <video controls playsinline preload="metadata" poster="${esc(w.poster || w.cover)}"><source src="${esc(w.video)}" type="video/mp4">你的瀏覽器無法播放這支影片。</video>
+      </div>
+      <div class="hero-meta">${durMeta}</div>`;
+  } else if (vid && w.youtube) {
+    const ytUrl = `https://www.youtube.com/watch?v=${esc(w.youtube)}`;
+    hero = (CAN_EMBED
+      ? `<button type="button" class="frame" id="yt-play" aria-label="播放影片"><img src="${esc(w.cover)}" alt="${esc(w.title)}"><span class="play">${PLAY}</span></button>`
+      : `<a class="frame" href="${ytUrl}" target="_blank" rel="noopener" aria-label="在 YouTube 播放"><img src="${esc(w.cover)}" alt="${esc(w.title)}"><span class="play">${PLAY}</span><span class="badge yt">在 YouTube 播放 ↗</span></a>`)
+      + `<div class="hero-meta">${durMeta}<a href="${ytUrl}" target="_blank" rel="noopener">在 YouTube 觀看 ↗</a></div>`;
+  }
+
+  const facts = [
+    ["年份", w.year ? `<span class="tc">${w.year}</span>` : ""],
+    ["委託／單位", esc(w.client)],
+    ["我負責", esc(w.role)],
+    ["規格", w.spec ? `<span class="tc">${esc(w.spec)}</span>` : ""],
+    ["片長", vid && w.duration ? `<span class="tc">${esc(w.duration)}</span>` : ""],
+    ["張數", !vid && w.images ? `<span class="tc">${w.images.length}</span> 張精選` : ""]
+  ].filter(f => f[1]);
+
+  const stills = w.stills ? `<div class="section"><h3 class="block-h">畫面</h3>
+      <div class="stills${w.stillsVertical ? " vert" : ""}">${w.stills.map(s =>
+        `<div class="frame${w.stillsVertical ? " vert" : ""}"><img src="${esc(s)}" alt="" loading="lazy"></div>`).join("")}</div></div>` : "";
+
+  const photos = !vid && w.images ? `<div class="section photos">${w.images.map((s, k) =>
+      `<div class="frame"><img src="${esc(s)}" alt="${esc(w.title)} ${k + 1}" loading="lazy"></div>`).join("")}</div>` : "";
+
+  const versions = w.versions ? `<div class="section"><h3 class="block-h">${w.vertical ? "其他版本" : "交付版本"}</h3><ul class="versions">${w.versions.map(([l, d, link]) =>
+      `<li><span>${link ? `<a href="#w-${esc(link)}">${esc(l)} →</a>` : esc(l)}</span><span class="tc">${esc(d)}</span></li>`).join("")}</ul></div>` : "";
+
+  view.innerHTML = `
+    <a class="back" href="#">← 全部作品</a>
+    <div class="${w.vertical ? "split" : ""}">
+    ${hero ? `<div class="hero">${hero}</div>` : ""}
+    <article class="detail">
+      <div class="eyebrow"><span>${vid ? "FILM" : "PHOTOGRAPHY"}</span><b>${w.year || "WORK"}</b></div>
+      <h1>${esc(w.title)}</h1>
+      <dl class="facts">
+        ${facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}
+        <dt>分類</dt><dd class="tags">${(w.tags || []).map(t => `<button type="button" data-tag="${esc(t)}">${esc(t)}</button>`).join("")}</dd>
+      </dl>
+      <p class="summary">${esc(w.summary)}</p>
+      ${w.rights ? `<p class="rights">${esc(w.rights)}</p>` : ""}
+    </article>
+    </div>
+    ${w.quote ? `<blockquote><p>「${esc(w.quote.text)}」</p><footer>${esc(w.quote.by)}</footer></blockquote>` : ""}
+    ${photos}
+    ${versions}
+    ${stills}
+    ${(w.notes || []).map(n => `<section class="note"><h3>${esc(n.h)}</h3>${n.p.map(p => `<p>${esc(p)}</p>`).join("")}</section>`).join("")}
+    <nav class="pager" aria-label="上一件與下一件作品">
+      ${prev ? `<a href="#w-${esc(prev.id)}"><small>上一件</small><span>${esc(prev.title)}</span></a>` : "<span></span>"}
+      ${next ? `<a href="#w-${esc(next.id)}"><small>下一件</small><span>${esc(next.title)}</span></a>` : "<span></span>"}
+    </nav>
+  `;
+  const yt = document.getElementById("yt-play");
+  if (yt) yt.addEventListener("click", () => {
+    const box = document.createElement("div");
+    box.className = "frame";
+    box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(w.youtube)}?autoplay=1&rel=0" title="${esc(w.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+    yt.replaceWith(box);
+  });
+  view.querySelectorAll("[data-tag]").forEach(b => b.addEventListener("click", () => setFilter(b.dataset.tag, true)));
+}
+
+function renderAbout() {
+  const contacts = [
+    ["Email", SITE.email, `mailto:${SITE.email}`],
+    ["Instagram", SITE.instagram.label, SITE.instagram.url],
+    ["YouTube", SITE.youtube.label, SITE.youtube.url]
+  ];
+  view.innerHTML = `
+    <div class="page-head">
+      <div class="eyebrow"><span>${esc(SITE.name)}</span><b>ABOUT</b></div>
+      <h1>關於我</h1>
+    </div>
+    <div class="about">
+      <div>
+        <section>
+          <p class="lead">讓土地與職人的故事被看見。</p>
+          <p>我是黃千瑜 Amy，數位多媒體設計系畢業，有 8 年以上品牌設計與影音製作經驗。在品牌端擔任美編企劃時開始拍農友訪談、活動紀錄和形象影片，2025 年起以影像創作者的身分接案。</p>
+          <p>我習慣用乾淨、紀實、有溫度的影像語言說故事，再用設計背景把字卡、版面和社群規格整理好，讓影片拿到就能用。</p>
+        </section>
+        <section>
+          <h3>我的做法</h3>
+          <ul class="rows">
+            <li>清楚敘事<span>先剪清楚主軸和觀眾路徑，再做節奏與情緒</span></li>
+            <li>可交付版本<span>依平台與用途輸出 16:9、9:16、1:1</span></li>
+            <li>穩定溝通<span>清單化回饋與里程碑，降低修改成本</span></li>
+          </ul>
+        </section>
+        <section>
+          <h3>工具與能力</h3>
+          <p class="skills">腳本企劃 · 分鏡 · 現場拍攝 · 剪接 · 調光 · 字幕與字卡 · 空拍（DJI Air 2S）· Podcast 剪輯 · 平面設計（Photoshop、Illustrator）</p>
+        </section>
+      </div>
+      <div>
+        <section>
+          <h3>可以幫你做</h3>
+          <ul class="rows">
+            <li>農業紀實與人物訪談<span>YouTube 3–12 分鐘</span></li>
+            <li>社群短影音<span>Reels · Shorts · 9:16</span></li>
+            <li>品牌形象影片<span>企劃 · 拍攝 · 剪接</span></li>
+            <li>活動紀錄<span>影片 · 平面攝影</span></li>
+            <li>空拍<span>場域介紹 · 農地紀錄</span></li>
+          </ul>
+        </section>
+        <section>
+          <h3>合作流程</h3>
+          <ol class="steps">
+            <li><div><b>了解用途與目標</b><small>平台、素材狀況、參考風格、時程</small></div></li>
+            <li><div><b>確認剪接方向</b><small>先對齊結構與版本，告訴你會怎麼剪</small></div></li>
+            <li><div><b>初稿</b><small>以清楚好懂為優先，可直接使用</small></div></li>
+            <li><div><b>調整修正</b><small>依清單化回饋，一次整批修正</small></div></li>
+            <li><div><b>定稿輸出</b><small>依平台規格輸出並備份</small></div></li>
+          </ol>
+        </section>
+        <section>
+          <h3>聯絡</h3>
+          <dl class="contact">
+            ${contacts.map(([k, v, href]) => `<div class="contact-row"><dt>${k}</dt><dd><a href="${esc(href)}" target="_blank" rel="noopener">${esc(v)}</a></dd><button type="button" class="copy" data-copy="${esc(k === "Email" ? v : href)}">複製</button></div>`).join("")}
+          </dl>
+          <p class="hint">詢問時可以附上：素材連結、用途平台、期望片長與數量、交期、參考風格 1–2 支。通常 24 小時內回覆。</p>
+        </section>
+      </div>
+    </div>
+  `;
+  view.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
+    const done = () => { b.textContent = "已複製"; setTimeout(() => (b.textContent = "複製"), 1600); };
+    const fallback = () => {
+      const sel = window.getSelection(), r = document.createRange();
+      r.selectNodeContents(b.previousElementSibling); sel.removeAllRanges(); sel.addRange(r);
+      b.textContent = "已選取";
+    };
+    try { navigator.clipboard.writeText(b.dataset.copy).then(done, fallback); } catch (e) { fallback(); }
+  }));
+}
+
+function route() {
+  const h = location.hash.slice(1);
+  let page = "index";
+  if (h === "about") { renderAbout(); page = "about"; }
+  else if (h.startsWith("w-")) {
+    const w = WORKS.find(x => x.id === h.slice(2));
+    if (w) { renderWork(w); page = "work"; } else renderIndex();
+  } else renderIndex();
+  document.querySelectorAll("[data-nav]").forEach(a =>
+    a.setAttribute("aria-current", (a.dataset.nav === page || (page === "work" && a.dataset.nav === "index")) ? "page" : "false"));
+  view.style.animation = "none"; void view.offsetWidth; view.style.animation = "";
+  window.scrollTo(0, 0);
+}
+
+document.getElementById("mark-initial").textContent = SITE.name.trim()[0];
+document.getElementById("mark-name").textContent = SITE.name;
+document.getElementById("mark-sub").textContent = SITE.sub;
+document.getElementById("foot-name").textContent = `© ${new Date().getFullYear()} ${SITE.nameZh} ${SITE.name}`;
+
+const root = document.documentElement;
+try { const t = localStorage.getItem("pf-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+document.getElementById("theme-btn").addEventListener("click", () => {
+  const cur = root.dataset.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  root.dataset.theme = cur === "dark" ? "light" : "dark";
+  try { localStorage.setItem("pf-theme", root.dataset.theme); } catch (e) {}
+});
+
+try { const f = sessionStorage.getItem("pf-filter"); if (f && (f === "all" || TAGS.includes(f))) filter = f; } catch (e) {}
+addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
