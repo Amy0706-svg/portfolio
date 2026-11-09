@@ -76,7 +76,20 @@ nav a:hover, nav a[aria-current="page"] { color: var(--fg); }
 .eyebrow b { color: var(--fg); font-weight: 500; }
 .page-head { padding-block: 64px 36px; display: grid; gap: 18px; }
 h1 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 500; margin: 0; letter-spacing: .02em; text-wrap: balance; }
-.lede { color: var(--muted); margin: 0; max-width: 62ch; }
+.lede { color: var(--muted); margin: 0; max-width: 62ch; display: grid; gap: 6px; }
+.lede p { margin: 0; }
+.lede p:first-child { color: var(--fg); font-size: 16px; }
+.list-head { display: flex; align-items: baseline; gap: 12px; border-top: 1px solid var(--line); padding-top: 28px; margin-bottom: 18px; }
+.list-head h2 { margin: 0; font-size: 13px; letter-spacing: .24em; font-weight: 700; }
+.list-head .tc { color: var(--muted); }
+/* shots: frames the viewer can trust were shot by Amy */
+.shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 32px 24px; }
+.shots figure { margin: 0; display: grid; gap: 12px; align-content: start; }
+.shots .frame.vert { max-width: 260px; }
+.shots .badge.kind { font-size: 10px; }
+.shots dl { margin: 0; display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 4px 14px; font-size: 13px; }
+.shots dt { color: var(--muted); }
+.shots dd { margin: 0; }
 
 /* filters */
 .filters { display: flex; flex-wrap: wrap; gap: 6px 26px; padding-bottom: 40px; font-size: 13px; letter-spacing: .06em; }
@@ -210,7 +223,7 @@ footer.site .wrap { display: flex; justify-content: space-between; gap: 8px 24px
   <div class="wrap">
     <a href="#" class="mark" aria-label="回到作品列表">
       <span class="mark-box" id="mark-initial">A</span>
-      <span class="mark-text"><strong id="mark-name">AMY HUANG</strong><small id="mark-sub">影像紀實 · FILM</small></span>
+      <span class="mark-text"><strong id="mark-name">AMY HUANG</strong><small id="mark-sub">人物紀實 · 現場攝影 · 空拍</small></span>
     </a>
     <nav>
       <a href="#" data-nav="index">作品</a>
@@ -238,8 +251,12 @@ footer.site .wrap { display: flex; justify-content: space-between; gap: 8px 24px
 const SITE = {
   name: "AMY HUANG",
   nameZh: "黃千瑜",
-  sub: "影像紀實 · FILM",
-  intro: "黃千瑜 Amy，影像紀實創作者。拍農業紀實、人物訪談、品牌形象與活動紀錄，從腳本、拍攝到剪接一人完成。",
+  sub: "人物紀實 · 現場攝影 · 空拍",
+  headline: "Amy Huang｜人物紀實・現場攝影・空拍",
+  intro: [
+    "喜歡走進真實現場，記錄人物、土地與職人的故事。",
+    "擅長人物訪談、農業紀實及活動攝影，具備從前期企劃、現場拍攝到影像剪輯的完整製作經驗。持續探索以紀實影像和空拍說故事的可能性。"
+  ],
   email: "amy19900706@gmail.com",
   instagram: { label: "@amy.film_tw", url: "https://www.instagram.com/amy.film_tw/" },
   youtube: { label: "@千瑜AmyHuang", url: "https://www.youtube.com/@%E5%8D%83%E7%91%9CAmyHuang" }
@@ -258,6 +275,10 @@ const TAGS = ["短影音", "農業紀實", "人物訪談", "品牌形象", "活�
    youtube: YouTube 影片 ID（網址 v= 後面那串）
    year:    不確定可以留 null，會排在最後
    versions: 交付版本 [名稱, 片長, 連到哪件作品的 id（可省略）]
+   shots:   展示攝影能力的影格或幕後照，每張可以寫：
+            { src: "images/xxx.jpg", label: "這是哪一顆鏡頭", gear: "相機＋鏡頭",
+              setup: "鏡位、光線", challenge: "現場遇到的限制", solution: "怎麼處理",
+              vertical: true（直式）, bts: true（幕後照） }
    images:  攝影作品的照片
    quote:   受訪者金句 { text, by }
    notes:   製作筆記 [{ h: 標題, p: [段落...] }]
@@ -278,12 +299,8 @@ const WORKS = [
       { h: "同一場活動，找自己的角度", p: [
         "典禮流程已經有別的團隊在拍，我把鏡頭放在人身上：創辦人和老闆兄弟的對話、互動和現場反應。片子因此有一條人物故事，不只是流程紀錄。"
       ]},
-      { h: "用途改了，結構跟著改", p: [
-        "初剪照活動紀錄的時間順序走。交件時用途改成社群行銷片，我依照主管的回饋重新安排整支片的結構。",
-        "開頭先放受訪者最有力的幾句話，接上預告字卡「透過苓業，啟發天賦使命」「開拓視野，玩更大的遊戲」；再接剪綵畫面，配上哥哥說的「一路以來遇到很多好的老師、貴人」；最後才進空拍，交代新廠和這場活動。黃老師出場時加上名條「苓業國際教育學院創辦人 黃鵬峻」，沒聽過苓業的人也知道他是誰。"
-      ]},
-      { h: "學到的事", p: [
-        "活動紀錄可以照時間走，行銷片要先給觀眾一個看下去的理由，再交代背景。前 10 秒放什麼，決定了這支片是紀錄還是溝通。"
+      { h: "敘事調整", p: [
+        "初版以活動紀錄的時間順序呈現。後續依發布需求，將學員感謝老師的現場發言提前，調整開場的敘事順序，再帶入剪綵、空拍與活動畫面。"
       ]}
     ],
     rights: "公司專案（苓業國際教育學院）。影像與品牌權利屬原單位，僅作作品集展示。空拍素材由另一組攝影團隊授權使用。"
@@ -551,8 +568,10 @@ function renderIndex() {
   view.innerHTML = `
     <div class="page-head">
       <div class="eyebrow"><span>${esc(SITE.name)}</span><b>INDEX</b></div>
-      <h1>全部作品</h1>
-      <p class="lede">${esc(SITE.intro)}精選 ${WORKS.length} 件。</p>
+      <h1>${esc(SITE.headline)}</h1>
+      <div class="lede">${SITE.intro.map(t => `<p>${esc(t)}</p>`).join("")}</div>
+    </div>
+    <div class="list-head"><h2>全部作品</h2><span class="tc">${WORKS.length}</span>
     </div>
     <div class="filters" role="group" aria-label="依分類篩選作品">
       ${groups.map(([k, label]) => {
@@ -630,6 +649,10 @@ function renderWork(w) {
     ${photos}
     ${versions}
     ${stills}
+    ${w.shots && w.shots.length ? `<div class="section"><h3 class="block-h">拍攝現場｜我拍的鏡頭</h3><div class="shots">${w.shots.map(sh => `<figure>
+        <div class="frame${sh.vertical ? " vert" : ""}"><img src="${esc(sh.src)}" alt="${esc(sh.label || "拍攝影格")}" loading="lazy"><span class="badge kind">${sh.bts ? "幕後" : "我拍的鏡頭"}</span></div>
+        <dl>${[["鏡頭", sh.label], ["器材", sh.gear], ["鏡位・光線", sh.setup], ["現場限制", sh.challenge], ["怎麼處理", sh.solution]].filter(r => r[1]).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+      </figure>`).join("")}</div></div>` : ""}
     ${(w.notes || []).map(n => `<section class="note"><h3>${esc(n.h)}</h3>${n.p.map(p => `<p>${esc(p)}</p>`).join("")}</section>`).join("")}
     <nav class="pager" aria-label="上一件與下一件作品">
       ${prev ? `<a href="#w-${esc(prev.id)}"><small>上一件</small><span>${esc(prev.title)}</span></a>` : "<span></span>"}
