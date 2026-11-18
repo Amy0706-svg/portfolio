@@ -274,6 +274,37 @@ header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)
 .vcard figcaption { display: flex; gap: 12px; font-size: 13px; color: var(--muted); }
 .vcard:hover figcaption span:first-child { color: var(--fg); }
 
+
+/* ---------- about (reference layout) ---------- */
+.tabs { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 10px; font-size: 13px; letter-spacing: .08em; }
+.tabs button { color: var(--muted); padding-block: 4px; border-bottom: 1px solid transparent; }
+.tabs button:hover { color: var(--fg); border-color: var(--accent); }
+.ab { padding-bottom: 120px; }
+.ab-row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 16px 48px; padding-block: 44px; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
+.ab-row h2 { margin: 0; font-size: 13px; letter-spacing: .24em; font-weight: 700; padding-top: 4px; }
+.ab-body { display: grid; gap: 16px; max-width: 62ch; }
+.ab-body p { margin: 0; line-height: 1.95; }
+@media (max-width: 720px) { .ab-row { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-block: 36px; } }
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; max-width: 720px; }
+.timeline li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 20px; padding-block: 12px; border-bottom: 1px dashed var(--line); }
+.timeline li:first-child { padding-top: 0; }
+.timeline li:last-child { border-bottom: 0; }
+.timeline .tc { color: var(--accent); font-size: 13px; padding-top: 3px; }
+.timeline p { margin: 0; line-height: 1.85; }
+.pull { font-size: clamp(20px, 2.4vw, 26px) !important; line-height: 1.6 !important; text-wrap: balance; }
+.person { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.person b { font-size: 18px; font-weight: 500; }
+.person span { color: var(--muted); font-size: 13px; }
+.ab .skills { font-size: 13.5px; color: var(--muted); line-height: 2; }
+.kv { list-style: none; margin: 0; padding: 0; display: grid; max-width: 720px; }
+.kv li { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 20px; padding-block: 12px; border-bottom: 1px dashed var(--line); }
+.kv li:first-child { padding-top: 0; }
+.kv li:last-child { border-bottom: 0; }
+.kv b { font-weight: 500; }
+.kv span { color: var(--muted); }
+@media (max-width: 480px) { .kv li, .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+.ab .contact { max-width: 560px; }
+
 /* ---------- home ---------- */
 #view.home { animation: none; }
 .hero-home { position: relative; height: clamp(520px, 90vh, 940px); overflow: hidden; background: #0c0b0a; color: #f4efe6; }
@@ -891,68 +922,98 @@ function renderWork(w) {
   view.querySelectorAll("[data-tag]").forEach(b => b.addEventListener("click", () => setFilter(b.dataset.tag, true)));
 }
 
+/* ============================================================
+   關於頁的內容（照參考網站的分段：里程碑、名字、我、服務……）
+   ============================================================ */
+const ABOUT = {
+  intro: "黃千瑜 Amy，影像紀實創作者，數位多媒體設計系畢業，有 8 年以上品牌設計與影音製作經驗。喜歡走進真實現場，拍人物訪談、農業紀實、活動與空拍，從前期企劃、現場拍攝到剪接一人完成。",
+  milestones: [
+    ["2012", "中國科技大學數位多媒體設計系畢業，主修 2D／3D 動畫與遊戲設計。"],
+    ["2017", "進入天然清潔品牌鮮之路擔任美編企劃，負責包裝、海報、官網視覺，並開始拍攝形象影片與活動紀錄。"],
+    ["2022", "金川農園農友訪談（鮮之路 YouTube），之後陸續走進果園與產地拍攝農友訪談。"],
+    ["2023", "打開台北活動攝影，以及國際旅遊夫人選美台灣代表宣傳影片。"],
+    ["2024", "個人接案拍攝亞洲生技大展 Bio Asia–Taiwan 展會紀錄。"],
+    ["2025", "以影像創作者身分接案，專注農業紀實、人物訪談與社群短影音；同時擔任 Podcast 剪輯。"],
+    ["2026", "為心洄拍攝台南東山咖啡系列影片，為苓業國際教育學院拍攝剪輯台中廣達機械新廠落成典禮。"]
+  ],
+  name: {
+    quote: "讓土地與職人的故事被看見。",
+    text: "協助農友與品牌整理重點、剪出清楚的版本，讓觀眾真正理解他們在做什麼。"
+  },
+  me: [
+    "兼具影像敘事與設計整合力，能把品牌理念轉成清楚、有溫度的視覺內容。字卡、版面和社群規格也一起整理好，影片拿到就能用。",
+    "習慣小型團隊的多工模式，用清單化回饋和里程碑對齊進度，讓交付品質和時程可控。影像語言：乾淨、紀實、有溫度。"
+  ],
+  services: [
+    ["人物訪談", "讓受訪者自在說話，剪出有溫度、聽得懂的人物故事。"],
+    ["農業紀實", "走進田間和果園，記錄農友的做法與成果，長片與短版一起交付。"],
+    ["活動紀錄", "典禮、講座、展會，影片與現場照片一次到位。"],
+    ["品牌形象影片", "從企劃、拍攝到剪接，替品牌說清楚它在意什麼。"],
+    ["社群短影音", "Reels、Shorts 直式 9:16，字幕放大，關掉聲音也看得懂。"],
+    ["空拍", "用高度交代場域全貌，適合園區、農地與工廠介紹。"]
+  ],
+  process: [
+    ["了解用途與目標", "平台、素材狀況、參考風格、時程"],
+    ["確認方向", "先對齊結構與版本，告訴你會怎麼拍、怎麼剪"],
+    ["拍攝與初剪", "以清楚好懂為優先，初稿就能直接使用"],
+    ["調整修正", "依清單化回饋，一次整批修正"],
+    ["定稿輸出", "依平台規格輸出 16:9、9:16、1:1 並備份"]
+  ],
+  partners: "苓業國際教育學院、心洄、鮮之路、台鹽、桃園大溪蕃薯藤、打開台北、亞洲生技大展、2023 國際旅遊夫人選美；拍攝對象包括金川農園、夢想有機莊園、雙溪山藥郎、其吉有機草莓農園。",
+  skills: "腳本企劃 · 分鏡 · 現場拍攝 · 剪接 · 調光 · 字幕與字卡 · 空拍（DJI Air 2S）· Podcast 剪輯 · 平面設計（Photoshop、Illustrator）",
+  area: "北部，可遠端合作"
+};
+
 function renderAbout() {
-  const contacts = [
-    ["Email", SITE.email, `mailto:${SITE.email}`],
-    ["Instagram", SITE.instagram.label, SITE.instagram.url],
-    ["YouTube", SITE.youtube.label, SITE.youtube.url]
+  const sections = [
+    ["milestones", "里程碑"], ["name", "初衷"], ["me", "我"], ["services", "服務"],
+    ["process", "合作流程"], ["partners", "合作單位"], ["info", "聯絡資料"]
   ];
   view.innerHTML = `
     <div class="page-head">
       <div class="eyebrow"><span>${esc(SITE.name)}</span><b>ABOUT</b></div>
-      <h1>關於我</h1>
+      <h1>關於 Amy Huang 黃千瑜</h1>
+      <p class="lede">${esc(ABOUT.intro)}</p>
+      <div class="tabs" role="navigation" aria-label="關於頁段落">${sections.map(([id, label]) => `<button type="button" data-jump="ab-${id}">${label}</button>`).join("")}</div>
     </div>
-    <div class="about">
-      <div>
-        <section>
-          <p class="lead">讓土地與職人的故事被看見。</p>
-          <p>我是黃千瑜 Amy，數位多媒體設計系畢業，有 8 年以上品牌設計與影音製作經驗。在品牌端擔任美編企劃時開始拍農友訪談、活動紀錄和形象影片，2025 年起以影像創作者的身分接案。</p>
-          <p>我習慣用乾淨、紀實、有溫度的影像語言說故事，再用設計背景把字卡、版面和社群規格整理好，讓影片拿到就能用。</p>
-        </section>
-        <section>
-          <h3>我的做法</h3>
-          <ul class="rows">
-            <li>清楚敘事<span>先剪清楚主軸和觀眾路徑，再做節奏與情緒</span></li>
-            <li>可交付版本<span>依平台與用途輸出 16:9、9:16、1:1</span></li>
-            <li>穩定溝通<span>清單化回饋與里程碑，降低修改成本</span></li>
-          </ul>
-        </section>
-        <section>
-          <h3>工具與能力</h3>
-          <p class="skills">腳本企劃 · 分鏡 · 現場拍攝 · 剪接 · 調光 · 字幕與字卡 · 空拍（DJI Air 2S）· Podcast 剪輯 · 平面設計（Photoshop、Illustrator）</p>
-        </section>
-      </div>
-      <div>
-        <section>
-          <h3>可以幫你做</h3>
-          <ul class="rows">
-            <li>農業紀實與人物訪談<span>YouTube 3–12 分鐘</span></li>
-            <li>社群短影音<span>Reels · Shorts · 9:16</span></li>
-            <li>品牌形象影片<span>企劃 · 拍攝 · 剪接</span></li>
-            <li>活動紀錄<span>影片 · 平面攝影</span></li>
-            <li>空拍<span>場域介紹 · 農地紀錄</span></li>
-          </ul>
-        </section>
-        <section>
-          <h3>合作流程</h3>
-          <ol class="steps">
-            <li><div><b>了解用途與目標</b><small>平台、素材狀況、參考風格、時程</small></div></li>
-            <li><div><b>確認剪接方向</b><small>先對齊結構與版本，告訴你會怎麼剪</small></div></li>
-            <li><div><b>初稿</b><small>以清楚好懂為優先，可直接使用</small></div></li>
-            <li><div><b>調整修正</b><small>依清單化回饋，一次整批修正</small></div></li>
-            <li><div><b>定稿輸出</b><small>依平台規格輸出並備份</small></div></li>
-          </ol>
-        </section>
-        <section>
-          <h3>聯絡</h3>
+    <div class="ab">
+      <section class="ab-row" id="ab-milestones"><h2>里程碑</h2>
+        <ol class="timeline">${ABOUT.milestones.map(([y, t]) => `<li><span class="tc">${esc(y)}</span><p>${esc(t)}</p></li>`).join("")}</ol>
+      </section>
+      <section class="ab-row" id="ab-name"><h2>初衷</h2>
+        <div class="ab-body"><p class="pull">${esc(ABOUT.name.quote)}</p><p>${esc(ABOUT.name.text)}</p></div>
+      </section>
+      <section class="ab-row" id="ab-me"><h2>我</h2>
+        <div class="ab-body">
+          <p class="person"><b>黃千瑜 Amy Huang</b><span>影像紀實創作者・攝影・剪接</span></p>
+          ${ABOUT.me.map(t => `<p>${esc(t)}</p>`).join("")}
+          <p class="skills">${esc(ABOUT.skills)}</p>
+        </div>
+      </section>
+      <section class="ab-row" id="ab-services"><h2>服務</h2>
+        <ul class="kv">${ABOUT.services.map(([k, v]) => `<li><b>${esc(k)}</b><span>${esc(v)}</span></li>`).join("")}</ul>
+      </section>
+      <section class="ab-row" id="ab-process"><h2>合作流程</h2>
+        <ol class="steps">${ABOUT.process.map(([k, v]) => `<li><div><b>${esc(k)}</b><small>${esc(v)}</small></div></li>`).join("")}</ol>
+      </section>
+      <section class="ab-row" id="ab-partners"><h2>合作單位</h2>
+        <div class="ab-body"><p>${esc(ABOUT.partners)}</p></div>
+      </section>
+      <section class="ab-row" id="ab-info"><h2>聯絡資料</h2>
+        <div class="ab-body">
           <dl class="contact">
-            ${contacts.map(([k, v, href]) => `<div class="contact-row"><dt>${k}</dt><dd><a href="${esc(href)}" target="_blank" rel="noopener">${esc(v)}</a></dd><button type="button" class="copy" data-copy="${esc(k === "Email" ? v : href)}">複製</button></div>`).join("")}
+            ${[["名稱", "Amy Huang 黃千瑜", ""], ["地區", ABOUT.area, ""], ["信箱", SITE.email, `mailto:${SITE.email}`], ["Instagram", SITE.instagram.label, SITE.instagram.url], ["YouTube", SITE.youtube.label, SITE.youtube.url]]
+              .map(([k, v, href]) => `<div class="contact-row"><dt>${k}</dt><dd>${href ? `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(v)}</a>` : esc(v)}</dd>${k === "信箱" ? `<button type="button" class="copy" data-copy="${esc(v)}">複製</button>` : "<span></span>"}</div>`).join("")}
           </dl>
           <p class="hint">詢問時可以附上：素材連結、用途平台、期望片長與數量、交期、參考風格 1–2 支。通常 24 小時內回覆。</p>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   `;
+  view.querySelectorAll("[data-jump]").forEach(b => b.addEventListener("click", () => {
+    const t = document.getElementById(b.dataset.jump);
+    if (t) t.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }));
   view.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
     const done = () => { b.textContent = "已複製"; setTimeout(() => (b.textContent = "複製"), 1600); };
     const fallback = () => {
