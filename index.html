@@ -36,6 +36,9 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+img { max-width: 100%; }
 body {
   background: var(--bg); color: var(--fg);
   font-family: var(--font-body); font-size: 15px; line-height: 1.75;
@@ -74,7 +77,7 @@ nav a:hover, nav a[aria-current="page"] { color: var(--fg); }
 /* page head */
 .eyebrow { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); display: flex; gap: 18px; flex-wrap: wrap; }
 .eyebrow b { color: var(--fg); font-weight: 500; }
-.page-head { padding-block: 64px 36px; display: grid; gap: 18px; }
+.page-head { padding-block: clamp(56px, 9vw, 120px) 44px; display: grid; gap: 22px; }
 h1 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 500; margin: 0; letter-spacing: .02em; text-wrap: balance; }
 .lede { color: var(--muted); margin: 0; max-width: 62ch; display: grid; gap: 6px; }
 .lede p { margin: 0; }
@@ -213,9 +216,67 @@ footer.site { border-top: 1px solid var(--line); }
 footer.site .wrap { display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; padding-block: 28px; font-size: 12px; color: var(--muted); letter-spacing: .04em; }
 
 
+
+/* ---------- header tools + menu ---------- */
+.tools { display: flex; align-items: center; gap: 18px; position: relative; z-index: 60; }
+.menu-btn { width: 40px; height: 40px; display: grid; place-items: center; color: inherit; }
+.menu-btn svg { width: 40px; height: 40px; }
+.menu-btn path { transition: transform .35s ease, opacity .25s; transform-origin: 20px 20px; }
+.menu-open .menu-btn .l1 { transform: translateX(12px) rotate(45deg); }
+.menu-open .menu-btn .l2 { opacity: 0; }
+.menu-open .menu-btn .l3 { transform: translateX(-12px) rotate(-45deg); }
+header { position: relative; z-index: 55; }
+.menu-open header { color: var(--fg) !important; }
+.menu-open header .mark-text small, .menu-open header .theme-btn { color: var(--muted) !important; }
+.menu { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; align-items: center; animation: menuIn .35s ease both; overflow-y: auto; }
+@keyframes menuIn { from { opacity: 0; } to { opacity: 1; } }
+.menu-inner { width: 100%; display: grid; gap: 56px; padding-block: 140px 48px; }
+.menu-links { display: grid; gap: 6px; }
+.menu-links a { display: flex; align-items: baseline; gap: 22px; font-size: clamp(34px, 6vw, 64px); font-weight: 500; letter-spacing: .06em; line-height: 1.35; color: var(--muted); transition: color .2s; justify-self: start; }
+.menu-links a small { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: .1em; }
+.menu-links a:hover, .menu-links a[aria-current="page"] { color: var(--fg); }
+.menu-foot { display: flex; gap: 12px 28px; flex-wrap: wrap; font-size: 13px; color: var(--muted); letter-spacing: .06em; border-top: 1px solid var(--line); padding-top: 24px; }
+.menu-foot a:hover { color: var(--fg); }
+/* header laid over a full-bleed image (home + film pages) */
+body.on-hero header { position: absolute; top: 0; left: 0; right: 0; color: #f4efe6; }
+body.on-hero header .mark-text small, body.on-hero header .theme-btn { color: rgb(244 239 230 / .72); }
+body.on-hero header .theme-btn:hover { color: #f4efe6; }
+@media (max-width: 720px) {
+  /* on phones the film frame is short, so the header sits above it instead of on it */
+  body.on-cine header { position: relative; color: var(--fg); }
+  body.on-cine header .mark-text small, body.on-cine header .theme-btn { color: var(--muted); }
+  body.on-cine header .wrap { padding-bottom: 20px; }
+}
+header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)); }
+/* ---------- film page: full-bleed cinema hero ---------- */
+.cine { position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 92vh; background: #000; overflow: hidden; color: #f4efe6; }
+.cine > img, .cine video, .cine iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.cine > img { object-fit: cover; }
+.cine video { object-fit: contain; background: #000; }
+.cine::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgb(0 0 0 / .45) 0%, rgb(0 0 0 / 0) 26%, rgb(0 0 0 / 0) 74%, rgb(0 0 0 / .35) 100%); transition: opacity .3s; }
+.cine.playing::after { opacity: 0; }
+.cine-play { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; width: 100%; color: inherit; }
+.cine-play .play { position: static; opacity: 1; transform: none; width: 86px; height: 86px; transition: transform .3s, background .3s; }
+.cine-play:hover .play { transform: scale(1.06); background: rgb(0 0 0 / .45); }
+.cine-play .play svg { width: 22px; height: 22px; }
+.cine .badge.dur { z-index: 3; right: max(24px, env(safe-area-inset-right, 0px)); bottom: 22px; font-size: 13px; }
+.cine .badge.yt { z-index: 3; bottom: 22px; }
+@media (max-width: 720px) { .cine-play .play { width: 64px; height: 64px; } .cine .badge.dur { right: 16px; bottom: 12px; } }
+.crumb { display: flex; gap: 18px; flex-wrap: wrap; font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); }
+.crumb a:hover { color: var(--fg); }
+.crumb b { color: var(--fg); font-weight: 500; }
+.cine-page .detail { padding-top: 64px; }
+.vcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 420px)); gap: 28px; }
+.vcard { display: grid; gap: 10px; align-content: start; }
+.vcard .frame img { transition: filter .3s; }
+.vcard:hover .frame img { filter: brightness(1.1); }
+.vcard .play { opacity: 1; transform: translate(-50%, -50%) scale(.82); }
+.vcard figcaption { display: flex; gap: 12px; font-size: 13px; color: var(--muted); }
+.vcard:hover figcaption span:first-child { color: var(--fg); }
+
 /* ---------- home ---------- */
 #view.home { animation: none; }
-.hero-home { position: relative; height: clamp(460px, 78vh, 880px); overflow: hidden; background: #0c0b0a; color: #f4efe6; }
+.hero-home { position: relative; height: clamp(520px, 90vh, 940px); overflow: hidden; background: #0c0b0a; color: #f4efe6; }
 .hero-home video, .hero-home .hero-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero-home::after { content: ""; position: absolute; inset: 0; background:
   linear-gradient(180deg, rgb(12 11 10 / .35) 0%, rgb(12 11 10 / 0) 30%, rgb(12 11 10 / .15) 55%, rgb(12 11 10 / .82) 100%); }
@@ -276,15 +337,27 @@ footer.site .wrap { display: flex; justify-content: space-between; gap: 8px 24px
       <span class="mark-box" id="mark-initial">A</span>
       <span class="mark-text"><strong id="mark-name">AMY HUANG</strong><small id="mark-sub">人物紀實 · 現場攝影 · 空拍</small></span>
     </a>
-    <nav>
-      <a href="#works" data-nav="index">作品</a>
-      <a href="#about" data-nav="about">關於</a>
+    <div class="tools">
       <button class="theme-btn" id="theme-btn" type="button" aria-label="切換深色或淺色">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.3"/><path d="M8 1.7a6.3 6.3 0 0 1 0 12.6z" fill="currentColor"/></svg>
       </button>
-    </nav>
+      <button class="menu-btn" id="menu-btn" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="menu">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><path class="l1" d="M8 3v34"/><path class="l2" d="M20 3v34"/><path class="l3" d="M32 3v34"/></svg>
+      </button>
+    </div>
   </div>
 </header>
+
+<div class="menu" id="menu" hidden>
+  <div class="wrap menu-inner">
+    <nav class="menu-links" aria-label="主選單">
+      <a href="#" data-nav="home"><small>01</small>首頁</a>
+      <a href="#works" data-nav="index"><small>02</small>作品</a>
+      <a href="#about" data-nav="about"><small>03</small>關於</a>
+    </nav>
+    <div class="menu-foot" id="menu-foot"></div>
+  </div>
+</div>
 
 <main id="view"></main>
 
@@ -690,7 +763,7 @@ function renderIndex() {
     <div class="page-head">
       <div class="eyebrow"><span>${esc(SITE.name)}</span><b>INDEX</b></div>
       <h1>全部作品</h1>
-      <p class="lede">人物訪談、農業紀實、活動攝影、空拍與短影音，共 ${WORKS.length} 件。</p>
+      <p class="lede">Amy Huang 的影像作品：人物訪談、農業紀實、活動攝影、空拍與短影音，2022 年起共 ${WORKS.length} 件。</p>
     </div>
     <div class="filters" role="group" aria-label="依分類篩選作品">
       ${groups.map(([k, label]) => {
@@ -708,6 +781,9 @@ function setFilter(f, go) {
   try { sessionStorage.setItem("pf-filter", filter); } catch (e) {}
   if (go && location.hash !== "#works") { location.hash = "works"; } else { renderIndex(); }
 }
+
+const KIND = { "活動紀錄": "EVENT FILM", "品牌形象": "BRAND FILM", "農業紀實": "DOCUMENTARY", "人物訪談": "INTERVIEW", "短影音": "SHORT-FORM", "空拍": "AERIAL", "攝影": "PHOTOGRAPHY" };
+const isCine = w => w.type === "video" && !w.vertical && (w.video || w.youtube);
 
 function renderWork(w) {
   const list = sorted();
@@ -746,15 +822,32 @@ function renderWork(w) {
   const photos = !vid && w.images ? `<div class="section photos">${w.images.map((s, k) =>
       `<div class="frame"><img src="${esc(s)}" alt="${esc(w.title)} ${k + 1}" loading="lazy"></div>`).join("")}</div>` : "";
 
-  const versions = w.versions ? `<div class="section"><h3 class="block-h">${w.vertical ? "其他版本" : "交付版本"}</h3><ul class="versions">${w.versions.map(([l, d, link]) =>
-      `<li><span>${link ? `<a href="#w-${esc(link)}">${esc(l)} →</a>` : esc(l)}</span><span class="tc">${esc(d)}</span></li>`).join("")}</ul></div>` : "";
+  const linked = (w.versions || []).filter(v => v[2] && WORKS.find(x => x.id === v[2]));
+  const plain = (w.versions || []).filter(v => !linked.includes(v));
+  const versions = w.versions ? `<div class="section"><h3 class="block-h">${w.vertical ? "其他版本" : "交付版本"}</h3>
+      ${linked.length ? `<div class="vcards">${linked.map(([l, d, id]) => { const x = WORKS.find(y => y.id === id);
+        return `<a class="vcard" href="#w-${esc(id)}"><div class="frame"><img src="${esc(x.cover)}" alt="" loading="lazy"><span class="play">${PLAY}</span></div><figcaption><span>${esc(l)}</span><span class="tc">${esc(d)}</span></figcaption></a>`; }).join("")}</div>` : ""}
+      ${plain.length ? `<ul class="versions"${linked.length ? ' style="margin-top:24px"' : ""}>${plain.map(([l, d]) => `<li><span>${esc(l)}</span><span class="tc">${esc(d)}</span></li>`).join("")}</ul>` : ""}
+    </div>` : "";
+  const cine = isCine(w);
+  let cineHtml = "";
+  if (cine) {
+    const ytUrl = w.youtube ? `https://www.youtube.com/watch?v=${esc(w.youtube)}` : "";
+    const btn = (w.video || CAN_EMBED)
+      ? `<button type="button" class="cine-play" id="cine-play" aria-label="播放影片"><span class="play">${PLAY}</span></button>`
+      : `<a class="cine-play" href="${ytUrl}" target="_blank" rel="noopener" aria-label="在 YouTube 播放"><span class="play">${PLAY}</span></a><span class="badge yt">在 YouTube 播放 ↗</span>`;
+    cineHtml = `<section class="cine" id="cine"><img src="${esc(w.poster || w.cover)}" alt="${esc(w.title)}">${btn}${w.duration ? `<span class="badge dur">${esc(w.duration)}</span>` : ""}</section>`;
+  }
+  const kind = KIND[(w.tags || [])[0]] || (vid ? "FILM" : "PHOTOGRAPHY");
 
   view.innerHTML = `
-    <a class="back" href="#works">← 全部作品</a>
+    ${cineHtml}
+    <div class="wrap${cine ? " cine-page" : ""}">
+    ${cine ? "" : `<div style="height:clamp(24px,5vw,56px)"></div>`}
     <div class="${w.vertical ? "split" : ""}">
-    ${hero ? `<div class="hero">${hero}</div>` : ""}
+    ${!cine && hero ? `<div class="hero">${hero}</div>` : ""}
     <article class="detail">
-      <div class="eyebrow"><span>${vid ? "FILM" : "PHOTOGRAPHY"}</span><b>${w.year || "WORK"}</b></div>
+      <div class="crumb"><a href="#works">← 全部作品</a><b>${kind}</b>${w.year ? `<span>${w.year}</span>` : ""}</div>
       <h1>${esc(w.title)}</h1>
       <dl class="facts">
         ${facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}
@@ -777,7 +870,17 @@ function renderWork(w) {
       ${prev ? `<a href="#w-${esc(prev.id)}"><small>上一件</small><span>${esc(prev.title)}</span></a>` : "<span></span>"}
       ${next ? `<a href="#w-${esc(next.id)}"><small>下一件</small><span>${esc(next.title)}</span></a>` : "<span></span>"}
     </nav>
+    </div>
   `;
+  const cp = document.getElementById("cine-play");
+  if (cp) cp.addEventListener("click", () => {
+    const box = document.getElementById("cine");
+    box.classList.add("playing");
+    box.innerHTML = w.video
+      ? `<video controls autoplay playsinline poster="${esc(w.poster || w.cover)}"><source src="${esc(w.video)}" type="video/mp4"></video>`
+      : `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(w.youtube)}?autoplay=1&rel=0" title="${esc(w.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+    const v = box.querySelector("video"); if (v) { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); }
+  });
   const yt = document.getElementById("yt-play");
   if (yt) yt.addEventListener("click", () => {
     const box = document.createElement("div");
@@ -871,12 +974,35 @@ function route() {
     const w = WORKS.find(x => x.id === h.slice(2));
     if (w) { renderWork(w); page = "work"; } else renderHome();
   } else renderHome();
-  view.className = page === "home" ? "home" : "wrap";
+  const curWork = page === "work" ? WORKS.find(x => x.id === h.slice(2)) : null;
+  const full = page === "home" || page === "work";
+  view.className = page === "home" ? "home" : (full ? "" : "wrap");
+  document.body.classList.toggle("on-hero", page === "home" || !!(curWork && isCine(curWork)));
+  document.body.classList.toggle("on-cine", !!(curWork && isCine(curWork)));
+  closeMenu();
   document.querySelectorAll("[data-nav]").forEach(a =>
     a.setAttribute("aria-current", (a.dataset.nav === page || (page === "work" && a.dataset.nav === "index")) ? "page" : "false"));
   view.style.animation = "none"; void view.offsetWidth; view.style.animation = "";
   window.scrollTo(0, 0);
 }
+
+const menu = document.getElementById("menu"), menuBtn = document.getElementById("menu-btn");
+document.getElementById("menu-foot").innerHTML = `<a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a><a href="${esc(SITE.instagram.url)}" target="_blank" rel="noopener">Instagram ↗</a><a href="${esc(SITE.youtube.url)}" target="_blank" rel="noopener">YouTube ↗</a>`;
+function closeMenu() {
+  if (menu.hidden) return;
+  menu.hidden = true; document.body.classList.remove("menu-open");
+  menuBtn.setAttribute("aria-expanded", "false"); menuBtn.setAttribute("aria-label", "開啟選單");
+}
+menuBtn.addEventListener("click", () => {
+  if (!menu.hidden) { closeMenu(); return; }
+  menu.hidden = false; document.body.classList.add("menu-open");
+  menuBtn.setAttribute("aria-expanded", "true"); menuBtn.setAttribute("aria-label", "關閉選單");
+  const first = menu.querySelector("a"); if (first) first.focus();
+});
+menu.querySelectorAll("a[href^='#']").forEach(a => a.addEventListener("click", () => {
+  if (a.getAttribute("href") === location.hash || (a.getAttribute("href") === "#" && !location.hash)) closeMenu();
+}));
+addEventListener("keydown", e => { if (e.key === "Escape") { closeMenu(); menuBtn.focus(); } });
 
 document.getElementById("mark-initial").textContent = SITE.name.trim()[0];
 document.getElementById("mark-name").textContent = SITE.name;
