@@ -611,6 +611,8 @@ const TAGS = ["短影音", "農業紀實", "人物訪談", "品牌形象", "活�
    youtube: YouTube 影片 ID（網址 v= 後面那串）
    year:    不確定可以留 null，會排在最後
    versions: 交付版本 [名稱, 片長, 連到哪件作品的 id（可省略）]
+   hidden:  true 代表先不放上網站（資料保留，改回 false 就會出現）
+   inAll:   false 代表不出現在「全部」，只在自己的分類（例如短影音）和長片頁的版本連結裡出現
    shots:   展示攝影能力的影格或幕後照，每張可以寫：
             { src: "images/xxx.jpg", label: "這是哪一顆鏡頭", gear: "相機＋鏡頭",
               setup: "鏡位、光線", challenge: "現場遇到的限制", solution: "怎麼處理",
@@ -781,7 +783,7 @@ const WORKS = [
     rights: PRIOR
   },
   {
-    id: "zhuolan-reels", type: "video", year: null,
+    id: "zhuolan-reels", type: "video", year: null, inAll: false,
     client: "鮮之路 IG", title: "卓蘭夢想有機莊園 甘露梨｜IG Reels 成果短片",
     tags: ["短影音", "農業紀實"],
     role: "剪接、節奏整理、字幕、基礎調色、版本輸出",
@@ -799,7 +801,7 @@ const WORKS = [
     rights: PRIOR
   },
   {
-    id: "shuangxi-yam-reels", type: "video", year: null,
+    id: "shuangxi-yam-reels", type: "video", year: null, inAll: false,
     client: "鮮之路 IG", title: "雙溪山藥郎 原生種山藥｜IG Reels 成果短片",
     tags: ["短影音", "農業紀實"],
     role: "剪接、節奏整理、字幕、基礎調色、版本輸出",
@@ -817,7 +819,7 @@ const WORKS = [
     rights: PRIOR
   },
   {
-    id: "fanshuteng-reels", type: "video", year: null,
+    id: "fanshuteng-reels", type: "video", year: null, inAll: false,
     client: "桃園大溪 蕃薯藤", title: "蕃薯藤園區空拍｜IG Reels 短版",
     tags: ["短影音", "空拍"],
     role: "空拍、剪接、文字標註、版本輸出",
@@ -850,7 +852,7 @@ const WORKS = [
     rights: "前公司／合作團隊專案。影像與品牌權利屬原單位，僅作作品集展示。"
   },
   {
-    id: "qiji-strawberry", type: "video", year: null,
+    id: "qiji-strawberry", type: "video", year: null, hidden: true,
     client: "鮮之路 YouTube 頻道", title: "其吉有機草莓農園｜農田訪問・農友老實說",
     tags: ["農業紀實", "人物訪談"],
     role: "腳本、拍攝、剪接、後製",
@@ -879,7 +881,9 @@ const view = document.getElementById("view");
 const PLAY = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9.5-5.5z"/></svg>';
 /* 預覽頁（被嵌在別的頁面裡）不能嵌入 YouTube，改成開新分頁播放；架在自己網站上就直接嵌入 */
 const CAN_EMBED = (() => { try { return window.self === window.top; } catch (e) { return false; } })();
-const sorted = () => WORKS.map((w, i) => [w, i]).sort((a, b) => ((b[0].year || 0) - (a[0].year || 0)) || (a[1] - b[1])).map(x => x[0]);
+const shown = () => WORKS.filter(w => !w.hidden);
+const inAllCount = () => shown().filter(w => w.inAll !== false).length;
+const sorted = () => shown().map((w, i) => [w, i]).sort((a, b) => ((b[0].year || 0) - (a[0].year || 0)) || (a[1] - b[1])).map(x => x[0]);
 let filter = "all";
 
 function card(w) {
@@ -929,20 +933,20 @@ function renderHome() {
     </section>
     <div class="wrap">
       <section class="home-sec">
-        <div class="sec-head"><h2>精選作品</h2><a href="#works">全部作品 ${WORKS.length} 件 →</a></div>
+        <div class="sec-head"><h2>精選作品</h2><a href="#works">全部作品 ${inAllCount()} 件 →</a></div>
         <div class="featured">${feat.map(card).join("")}</div>
       </section>
       <section class="home-sec">
         <div class="sec-head"><h2>可以幫你拍</h2></div>
         <div class="services">${SERVICES.map(([name, tag, line]) => {
-          const n = WORKS.filter(w => (w.tags || []).includes(tag)).length;
+          const n = shown().filter(w => (w.tags || []).includes(tag)).length;
           return `<button type="button" data-service="${esc(tag)}"><small>${n} 件作品</small><b>${esc(name)}</b><span>${esc(line)}</span></button>`;
         }).join("")}</div>
       </section>
       <section class="home-sec">
         <div class="sec-head"><h2>幕後</h2></div>
         <div class="more">
-          <a href="#notes"><small class="tc">${WORKS.reduce((n, w) => n + (w.notes || []).length, 0)} 則</small><b>製作筆記</b><span>每件作品怎麼拍、怎麼剪，當時為什麼這樣決定。</span><em>看筆記 →</em></a>
+          <a href="#notes"><small class="tc">${shown().reduce((n, w) => n + (w.notes || []).length, 0)} 則</small><b>製作筆記</b><span>每件作品怎麼拍、怎麼剪，當時為什麼這樣決定。</span><em>看筆記 →</em></a>
           <a href="#ai"><small class="tc">${AI_PAGE.flows.length} 個流程</small><b>AI 用在哪裡</b><span>AI 幫我整理資料，拍攝和剪接的決定由我來。</span><em>看工作流 →</em></a>
         </div>
       </section>
@@ -1069,16 +1073,16 @@ function relatedTo(w) {
 
 function renderIndex() {
   const groups = [["all", "全部"], ...TAGS.map(t => [t, t])];
-  const list = sorted().filter(w => filter === "all" || (w.tags || []).includes(filter));
+  const list = sorted().filter(w => filter === "all" ? w.inAll !== false : (w.tags || []).includes(filter));
   view.innerHTML = `
     <div class="page-head">
       <div class="eyebrow"><span>${esc(SITE.name)}</span><b>INDEX</b></div>
       <h1>全部作品</h1>
-      <p class="lede">Amy Huang 的影像作品：人物訪談、農業紀實、活動攝影、空拍與短影音，2022 年起共 ${WORKS.length} 件。</p>
+      <p class="lede">Amy Huang 的影像作品：人物訪談、農業紀實、活動攝影、空拍與短影音，2022 年起共 ${inAllCount()} 件。</p>
     </div>
     <div class="filters" role="group" aria-label="依分類篩選作品">
       ${groups.map(([k, label]) => {
-        const n = k === "all" ? WORKS.length : WORKS.filter(w => (w.tags || []).includes(k)).length;
+        const n = k === "all" ? inAllCount() : shown().filter(w => (w.tags || []).includes(k)).length;
         return n ? `<button type="button" data-filter="${esc(k)}" aria-pressed="${filter === k}">${esc(label)}<span class="n">${n}</span></button>` : "";
       }).join("")}
     </div>
