@@ -332,6 +332,15 @@ header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)
 .note-link { justify-self: start; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); }
 .note-link:hover { color: var(--fg); border-color: var(--fg); }
 
+.more { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.more a { display: grid; gap: 10px; align-content: start; padding: 28px; border: 1px solid var(--line); transition: border-color .25s, background .25s; }
+.more a:hover { border-color: var(--fg); background: var(--surface); }
+.more small { color: var(--accent); font-size: 12px; }
+.more b { font-size: 20px; font-weight: 500; }
+.more span { color: var(--muted); font-size: 14px; line-height: 1.8; }
+.more em { font-style: normal; font-size: 13px; color: var(--muted); margin-top: 6px; }
+.more a:hover em { color: var(--fg); }
+@media (max-width: 620px) { .more { grid-template-columns: minmax(0, 1fr); } .more a { padding: 22px; } }
 /* ---------- home ---------- */
 #view.home { animation: none; }
 .hero-home { position: relative; height: clamp(520px, 90vh, 940px); overflow: hidden; background: #0c0b0a; color: #f4efe6; }
@@ -787,6 +796,13 @@ function renderHome() {
           return `<button type="button" data-service="${esc(tag)}"><small>${n} 件作品</small><b>${esc(name)}</b><span>${esc(line)}</span></button>`;
         }).join("")}</div>
       </section>
+      <section class="home-sec">
+        <div class="sec-head"><h2>幕後</h2></div>
+        <div class="more">
+          <a href="#notes"><small class="tc">${WORKS.reduce((n, w) => n + (w.notes || []).length, 0)} 則</small><b>製作筆記</b><span>每件作品背後的拍攝、剪接與判斷。</span><em>看筆記 →</em></a>
+          <a href="#ai"><small class="tc">${AI_PAGE.flows.length} 個流程</small><b>AI 用在哪裡</b><span>AI 負責整理和粗活，鏡頭、敘事和判斷由我來。</span><em>看工作流 →</em></a>
+        </div>
+      </section>
       <section class="home-sec hello">
         <div class="stack">
           <p class="big">從企劃、拍攝到剪輯，完整交付一支片。</p>
@@ -1019,12 +1035,6 @@ const AI_PAGE = {
       ["ai", "分批讀取，每個檔案用一句話說明內容、對應腳本哪一段"],
       ["ai", "整理成「檔名／內容／腳本段落」對照表"],
       ["hand", "腳本經過確認後，才標時間點、進時間軸剪接"]
-    ]},
-    { title: "把 AI 對話變成下一步", note: "跟 AI 討論企劃、職涯或接案問題後，我不收藏整段對話，只在 Notion 留三行：學到什麼、決定什麼、下一步做什麼，並排上日期。", steps: [
-      ["ai", "和 AI 討論問題、整理想法"],
-      ["hand", "寫下一句話結論和做出的決定"],
-      ["hand", "訂出可以排進行事曆的下一步"],
-      ["hand", "每週回顧：完成、延期或刪掉"]
     ]}
   ],
   rules: [
@@ -1032,7 +1042,7 @@ const AI_PAGE = {
     ["客戶素材只讀需要的部分", "公司或客戶的素材，只讓 AI 讀這次需要的資料夾，不把內容上傳，做完就斷開。"],
     ["先跑順，再固定成流程", "一個流程確定好用，才把它寫成 SOP，一次只固定一個。"]
   ],
-  tools: "ChatGPT · Notion AI · Codex · Midjourney"
+  tools: "ChatGPT · Claude · Notion AI · Codex"
 };
 const TAG_LABEL = { ai: "AI", tpl: "模板", hand: "人工" };
 
