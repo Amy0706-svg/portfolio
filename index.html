@@ -17,6 +17,7 @@
   --muted: #8f8a81;
   --line: #2c2a27;
   --accent: #c9a46a;
+  --accent-soft: rgb(201 164 106 / .14);
   --frame-ink: #f4efe6;
   --font-display: "Syne", "Noto Sans TC", system-ui, sans-serif;
   --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
@@ -27,12 +28,12 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --bg: #f3f3f1; --surface: #e8e7e3; --fg: #171614; --muted: #6c6862;
-    --line: #d9d7d2; --accent: #86652f; color-scheme: light;
+    --line: #d9d7d2; --accent: #86652f; --accent-soft: rgb(134 101 47 / .12); color-scheme: light;
   }
 }
 :root[data-theme="light"] {
   --bg: #f3f3f1; --surface: #e8e7e3; --fg: #171614; --muted: #6c6862;
-  --line: #d9d7d2; --accent: #86652f; color-scheme: light;
+  --line: #d9d7d2; --accent: #86652f; --accent-soft: rgb(134 101 47 / .12); color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -341,6 +342,85 @@ header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)
 .more em { font-style: normal; font-size: 13px; color: var(--muted); margin-top: 6px; }
 .more a:hover em { color: var(--fg); }
 @media (max-width: 620px) { .more { grid-template-columns: minmax(0, 1fr); } .more a { padding: 22px; } }
+
+/* ---------- AI page: edit-timeline tracks ---------- */
+.split-bar { display: grid; gap: 16px; padding: 28px; border: 1px solid var(--line); margin-bottom: 72px; }
+.bar { display: flex; height: 14px; gap: 3px; }
+.seg { width: var(--w); border-radius: 2px; transform-origin: left; animation: grow .9s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * .18s + .2s); }
+.seg.ai { background: var(--accent); }
+.seg.tpl { background: repeating-linear-gradient(135deg, var(--muted) 0 3px, transparent 3px 6px); }
+.seg.hand { background: var(--line); }
+@keyframes grow { from { transform: scaleX(.04); } to { transform: none; } }
+.bar-legend { display: flex; flex-wrap: wrap; gap: 10px 32px; font-size: 13px; }
+.bar-legend div { display: flex; align-items: center; gap: 8px; }
+.bar-legend b { font-weight: 500; }
+.bar-legend .tc { color: var(--muted); }
+.bar-legend .pc { color: var(--fg); }
+.sw { width: 14px; height: 14px; border-radius: 2px; display: inline-block; }
+.sw.ai { background: var(--accent); }
+.sw.tpl { background: repeating-linear-gradient(135deg, var(--muted) 0 3px, transparent 3px 6px); border: 1px solid var(--muted); }
+.sw.hand { background: var(--line); border: 1px solid var(--muted); }
+.bar-note { margin: 0; font-size: 13px; color: var(--muted); }
+.flow-sec { display: grid; gap: 24px; padding-bottom: 72px; }
+.flow-head { display: grid; gap: 8px; max-width: 64ch; }
+.track-no { font-size: 11px; letter-spacing: .2em; color: var(--accent); }
+.flow-head h2 { margin: 0; font-size: clamp(20px, 2.4vw, 24px); font-weight: 500; }
+.flow-head p { margin: 0; color: var(--muted); line-height: 1.85; }
+.track { display: grid; grid-template-columns: 44px minmax(0, 1fr); border: 1px solid var(--line); background: var(--surface); }
+.lane-label { display: grid; place-items: center; border-right: 1px solid var(--line); font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; }
+.clips { --dir: h; list-style: none; margin: 0; padding: 14px; position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; }
+.clip { display: grid; gap: 10px; align-content: start; padding: 12px 12px 14px; min-height: 112px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); transition: border-color .3s, transform .3s, background .3s; min-width: 0; }
+.clip.ai { background: var(--accent-soft); border-color: var(--accent); }
+.clip.tpl { background: transparent; border-style: dashed; border-color: var(--muted); }
+.clip-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.clip-top .tc { font-size: 11px; color: var(--muted); }
+.clip-txt { font-size: 13.5px; line-height: 1.7; }
+.track.live .clip.hand .clip-txt { color: var(--muted); transition: color .3s; }
+.track.live .clip.on { border-color: var(--fg); transform: translateY(-3px); }
+.track.live .clip.hand.on .clip-txt, .track.live .clip.done .clip-txt { color: var(--fg); }
+.playhead { position: absolute; left: 14px; top: 0; bottom: 0; width: 0; pointer-events: none; display: none; will-change: transform; }
+.track.live .playhead { display: block; }
+.playhead::before { content: ""; position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: #d8483b; }
+.playhead i { position: absolute; top: 0; left: -6px; width: 12px; height: 10px; background: #d8483b; clip-path: polygon(0 0, 100% 0, 100% 55%, 50% 100%, 0 55%); }
+@media (max-width: 720px) {
+  .clips { --dir: v; grid-template-columns: minmax(0, 1fr); }
+  .clip { min-height: 0; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px; }
+  .clip-top { display: contents; }
+  .clip-top .tc { display: none; }
+  .track.live .clip.on { transform: translateX(3px); }
+  .playhead { left: 0; right: 0; top: 14px; bottom: auto; width: auto; height: 0; }
+  .playhead::before { left: 0; right: 0; top: -1px; bottom: auto; width: auto; height: 2px; }
+  .playhead i { left: 0; top: -6px; width: 10px; height: 12px; clip-path: polygon(0 0, 55% 0, 100% 50%, 55% 100%, 0 100%); }
+}
+.rules { padding-bottom: 64px; }
+.rule-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.rule { display: grid; gap: 12px; align-content: start; padding-top: 20px; border-top: 2px solid var(--fg); }
+.rule .tc { font-size: 12px; color: var(--accent); }
+.rule b { font-size: 17px; font-weight: 500; line-height: 1.5; }
+.rule p { margin: 0; color: var(--muted); line-height: 1.85; font-size: 14px; }
+@media (max-width: 860px) { .rule-grid { grid-template-columns: minmax(0, 1fr); } }
+.tools-row { padding-bottom: 120px; }
+.tool-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.tool-chips span { padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; }
+/* ---------- notes page: card wall ---------- */
+.ngrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 32px; padding-bottom: 120px; }
+@media (max-width: 1000px) { .ngrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .ngrid { grid-template-columns: minmax(0, 1fr); gap: 40px; } }
+.ncard { display: grid; gap: 16px; align-content: start; min-width: 0; animation: rise .6s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(min(var(--i), 12) * 55ms); }
+@keyframes rise { from { opacity: .25; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.ncard .frame img { transition: transform .6s ease, filter .4s; }
+.ncard:hover .frame img { transform: scale(1.04); filter: brightness(1.08); }
+.ntag { position: absolute; left: 12px; top: 12px; z-index: 2; max-width: calc(100% - 24px); padding: 5px 11px; border-radius: 999px; font-size: 12px; letter-spacing: .04em; color: #f4efe6; background: rgb(0 0 0 / .55); backdrop-filter: blur(6px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nbody { display: grid; gap: 10px; }
+.nbody h2 { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.6; }
+.nbody p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.85; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.ncard:hover h2 { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.ncard .note-link { justify-self: start; }
+.grid .card { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+.grid .card:nth-child(2) { animation-delay: 60ms; } .grid .card:nth-child(3) { animation-delay: 120ms; }
+.grid .card:nth-child(4) { animation-delay: 180ms; } .grid .card:nth-child(5) { animation-delay: 240ms; } .grid .card:nth-child(n+6) { animation-delay: 300ms; }
+@media (prefers-reduced-motion: reduce) { .seg, .ncard, .grid .card { animation: none; } }
+
 /* ---------- home ---------- */
 #view.home { animation: none; }
 .hero-home { position: relative; height: clamp(520px, 90vh, 940px); overflow: hidden; background: #0c0b0a; color: #f4efe6; }
@@ -1047,26 +1127,80 @@ const AI_PAGE = {
 const TAG_LABEL = { ai: "AI", tpl: "模板", hand: "人工" };
 
 function renderAI() {
-  const count = t => AI_PAGE.flows.reduce((n, f) => n + f.steps.filter(s => s[0] === t).length, 0);
+  const all = AI_PAGE.flows.flatMap(f => f.steps);
+  const n = t => all.filter(st => st[0] === t).length;
+  const pct = t => (n(t) / all.length * 100).toFixed(1);
   view.innerHTML = `
     <div class="page-head">
       <div class="eyebrow"><span>${esc(SITE.name)}</span><b>AI WORKFLOW</b></div>
       <h1>AI 用在哪裡</h1>
       <p class="lede">${esc(AI_PAGE.lede)}</p>
-      <div class="legend">${["ai", "tpl", "hand"].map(t => `<span class="chip ${t}">${TAG_LABEL[t]}</span><span class="tc">${count(t)} 步</span>`).join("")}</div>
     </div>
-    <div class="ab">
-      ${AI_PAGE.flows.map((f, i) => `<section class="ab-row"><h2><span class="tc">${String(i + 1).padStart(2, "0")}</span> ${esc(f.title)}</h2>
-        <div class="ab-body">
-          <p>${esc(f.note)}</p>
-          <ol class="flow">${f.steps.map(([t, txt]) => `<li class="${t}"><span class="chip ${t}">${TAG_LABEL[t]}</span><span>${esc(txt)}</span></li>`).join("")}</ol>
-        </div></section>`).join("")}
-      <section class="ab-row"><h2>我的原則</h2>
-        <ul class="kv">${AI_PAGE.rules.map(([k, v]) => `<li><b>${esc(k)}</b><span>${esc(v)}</span></li>`).join("")}</ul>
-      </section>
-      <section class="ab-row"><h2>常用工具</h2><div class="ab-body"><p class="skills">${esc(AI_PAGE.tools)}</p></div></section>
-    </div>
+    <section class="split-bar" aria-label="全部步驟中，AI、模板與人工各佔多少">
+      <div class="bar">${["ai", "tpl", "hand"].map((t, i) => `<span class="seg ${t}" style="--w:${pct(t)}%;--i:${i}"></span>`).join("")}</div>
+      <div class="bar-legend">${["ai", "tpl", "hand"].map(t => `<div><span class="sw ${t}"></span><b>${TAG_LABEL[t]}</b><span class="tc">${n(t)} 步</span><span class="tc pc">${Math.round(pct(t))}%</span></div>`).join("")}</div>
+      <p class="bar-note">${AI_PAGE.flows.length} 個流程、共 ${all.length} 個步驟。紅色播放頭掃到哪一步，就看那一步由誰負責。</p>
+    </section>
+    ${AI_PAGE.flows.map((f, i) => `<section class="flow-sec">
+      <header class="flow-head">
+        <span class="tc track-no">TRACK ${String(i + 1).padStart(2, "0")}</span>
+        <h2>${esc(f.title)}</h2>
+        <p>${esc(f.note)}</p>
+      </header>
+      <div class="track" data-track>
+        <div class="lane-label" aria-hidden="true"><span>V${i + 1}</span></div>
+        <ol class="clips" style="--n:${f.steps.length}">
+          ${f.steps.map(([t, txt], k) => `<li class="clip ${t}"><span class="clip-top"><span class="tc">${String(k + 1).padStart(2, "0")}</span><span class="chip ${t}">${TAG_LABEL[t]}</span></span><span class="clip-txt">${esc(txt)}</span></li>`).join("")}
+          <li class="playhead" aria-hidden="true"><i></i></li>
+        </ol>
+      </div>
+    </section>`).join("")}
+    <section class="rules">
+      <div class="sec-head"><h2>我的原則</h2></div>
+      <div class="rule-grid">${AI_PAGE.rules.map(([k, v], i) => `<div class="rule"><span class="tc">${String(i + 1).padStart(2, "0")}</span><b>${esc(k)}</b><p>${esc(v)}</p></div>`).join("")}</div>
+    </section>
+    <section class="tools-row">
+      <div class="sec-head"><h2>常用工具</h2></div>
+      <div class="tool-chips">${AI_PAGE.tools.split("·").map(t => `<span>${esc(t.trim())}</span>`).join("")}</div>
+    </section>
   `;
+  startTracks();
+}
+
+/* playhead that sweeps each track like an edit timeline; pauses off-screen and for reduced motion */
+var trackRaf = 0, trackIO = null;
+function startTracks() {
+  cancelAnimationFrame(trackRaf);
+  if (trackIO) trackIO.disconnect();
+  const tracks = [...document.querySelectorAll("[data-track]")];
+  if (!tracks.length || matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  const STEP = 1300, HOLD = 1400;
+  const state = new Map(tracks.map(t => [t, { visible: false, t0: 0, last: -2 }]));
+  trackIO = new IntersectionObserver(es => es.forEach(e => {
+    const st = state.get(e.target);
+    if (e.isIntersecting && !st.visible) st.t0 = performance.now();
+    st.visible = e.isIntersecting;
+  }), { threshold: 0.35 });
+  tracks.forEach(t => { t.classList.add("live"); trackIO.observe(t); });
+  const tick = now => {
+    if (!tracks[0].isConnected) { trackIO.disconnect(); return; }
+    state.forEach((st, el) => {
+      if (!st.visible) return;
+      const box = el.querySelector(".clips"), clips = box.querySelectorAll(".clip"), ph = box.querySelector(".playhead");
+      const n = clips.length, run = n * STEP, cyc = run + HOLD;
+      const t = (now - st.t0) % cyc, p = Math.min(t / run, 1);
+      const vertical = getComputedStyle(box).getPropertyValue("--dir").trim() === "v";
+      const pad = 14;
+      ph.style.transform = vertical ? `translateY(${p * (box.clientHeight - pad * 2)}px)` : `translateX(${p * (box.clientWidth - pad * 2)}px)`;
+      const idx = p < 1 ? Math.floor(p * n) : n;
+      if (idx !== st.last) {
+        clips.forEach((c, k) => { c.classList.toggle("on", k === idx); c.classList.toggle("done", k < idx); });
+        st.last = idx;
+      }
+    });
+    trackRaf = requestAnimationFrame(tick);
+  };
+  trackRaf = requestAnimationFrame(tick);
 }
 
 function renderNotes() {
@@ -1076,15 +1210,18 @@ function renderNotes() {
     <div class="page-head">
       <div class="eyebrow"><span>${esc(SITE.name)}</span><b>NOTES</b></div>
       <h1>製作筆記</h1>
-      <p class="lede">每件作品背後的拍攝、剪接與判斷，從作品頁整理出來的 ${items.length} 則筆記。</p>
+      <p class="lede">每件作品背後的拍攝、剪接與判斷，從 ${new Set(items.map(i => i.w.id)).size} 件作品整理出 ${items.length} 則筆記。</p>
     </div>
-    <div class="notes-list">
-      ${items.map(({ w, n }) => `<article class="note-item">
-        <div class="note-meta">${w.year ? `<span class="tc">${w.year}</span>` : ""}<a href="#w-${esc(w.id)}">${esc(w.title)}</a></div>
-        <h2>${esc(n.h)}</h2>
-        ${n.p.map(t => `<p>${esc(t)}</p>`).join("")}
-        <a class="note-link" href="#w-${esc(w.id)}">看這件作品 →</a>
-      </article>`).join("")}
+    <div class="ngrid">
+      ${items.map(({ w, n }, k) => `<a class="ncard" href="#w-${esc(w.id)}" style="--i:${k}">
+        <div class="frame"><img src="${esc(w.cover)}" alt="" loading="lazy"><span class="ntag">${esc(n.h)}</span></div>
+        <div class="nbody">
+          <div class="note-meta">${w.year ? `<span class="tc">${w.year}</span>` : ""}<span>${esc((w.tags || [])[0] || "")}</span></div>
+          <h2>${esc(w.title)}</h2>
+          <p>${esc(n.p.join(""))}</p>
+          <span class="note-link">看這件作品 →</span>
+        </div>
+      </a>`).join("")}
     </div>
   `;
 }
@@ -1153,7 +1290,7 @@ function renderAbout() {
 function route() {
   const h = location.hash.slice(1);
   let page = "home";
-  cancelAnimationFrame(tcRaf);
+  cancelAnimationFrame(tcRaf); if (typeof trackRaf !== "undefined") { cancelAnimationFrame(trackRaf); if (trackIO) trackIO.disconnect(); }
   if (h === "about") { renderAbout(); page = "about"; }
   else if (h === "ai") { renderAI(); page = "ai"; }
   else if (h === "notes") { renderNotes(); page = "notes"; }
