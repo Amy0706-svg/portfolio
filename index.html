@@ -3,6 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Amy Huang 黃千瑜｜人物紀實、現場攝影與空拍。人物訪談、農業紀實、活動紀錄、品牌形象影片與社群短影音作品集，從企劃、拍攝到剪接完整交付。">
+<link rel="canonical" href="https://amy0706-svg.github.io/portfolio/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Amy Huang 影像作品集">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="Amy Huang｜人物紀實・現場攝影・空拍">
+<meta property="og:description" content="人物訪談、農業紀實、活動紀錄、品牌形象與短影音。喜歡走進真實現場，記錄人物、土地與職人的故事。">
+<meta property="og:url" content="https://amy0706-svg.github.io/portfolio/">
+<meta property="og:image" content="https://amy0706-svg.github.io/portfolio/images/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Amy Huang 人物紀實・現場攝影・空拍">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#121110">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Amy Huang","alternateName":"黃千瑜","jobTitle":"影像紀實創作者","description":"人物紀實、現場攝影與空拍：人物訪談、農業紀實、活動紀錄、品牌形象影片與社群短影音。","url":"https://amy0706-svg.github.io/portfolio/","image":"https://amy0706-svg.github.io/portfolio/images/og.jpg","sameAs":["https://www.instagram.com/amy.film_tw/","https://www.youtube.com/@%E5%8D%83%E7%91%9CAmyHuang"],"knowsAbout":["人物訪談","農業紀實","活動紀錄","品牌形象影片","社群短影音","空拍","剪接","調光"],"homeLocation":{"@type":"Place","name":"台灣"}}
+</script>
 <title>Amy Huang 影像作品集</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -424,6 +444,46 @@ header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)
 .grid .card:nth-child(4) { animation-delay: 180ms; } .grid .card:nth-child(5) { animation-delay: 240ms; } .grid .card:nth-child(n+6) { animation-delay: 300ms; }
 @media (prefers-reduced-motion: reduce) { .seg, .ncard, .grid .card { animation: none; } }
 
+
+/* ---------- slate (clapperboard) contact: a real slate is always dark ---------- */
+.slate { --chalk: #f1ede4; --board: #1c1b19; --rule: rgb(241 237 228 / .22); color: var(--chalk); background: var(--board); border-radius: 6px; overflow: hidden; box-shadow: 0 18px 40px -24px rgb(0 0 0 / .6); max-width: 560px; width: 100%; }
+.clapper { position: relative; height: 54px; background: var(--board); }
+.clapper > div { position: absolute; left: 0; right: 0; height: 26px; overflow: hidden; }
+.clapper i { position: absolute; inset: 0; background: repeating-linear-gradient(115deg, #f1ede4 0 26px, #111 26px 52px); }
+.clap-bottom { bottom: 0; }
+.clap-top { top: 6px; transform-origin: 10px 100%; transform: rotate(-11deg); transition: transform .5s cubic-bezier(.3,1.6,.5,1); }
+.slate.clap .clap-top { animation: clap .42s ease-in both; }
+@keyframes clap { 0% { transform: rotate(-11deg); } 55% { transform: rotate(0deg) translateY(14px); } 75% { transform: rotate(-2deg) translateY(12px); } 100% { transform: rotate(0deg) translateY(14px); } }
+.slate-body { display: grid; gap: 14px; padding: 20px 22px 22px; border-top: 2px solid #111; }
+.slate label { display: grid; gap: 4px; min-width: 0; }
+.slate label > span { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; color: rgb(241 237 228 / .6); }
+.slate input, .slate select, .slate textarea { font: inherit; font-size: 15px; color: var(--chalk); background: transparent; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; padding: 6px 0; width: 100%; min-width: 0; }
+.slate select { cursor: pointer; }
+.slate select option { color: #111; }
+.slate textarea { resize: vertical; line-height: 1.7; }
+.slate input::placeholder, .slate textarea::placeholder { color: rgb(241 237 228 / .35); }
+.slate input:focus, .slate select:focus, .slate textarea:focus { outline: none; border-bottom-color: #c9a46a; }
+.slate-prod input { font-size: 20px; }
+.slate-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 18px; }
+.slate-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 520px) { .slate-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .slate-grid label:last-child:nth-child(3) { grid-column: 1 / -1; } .slate-grid.two { grid-template-columns: minmax(0, 1fr); } }
+.slate-foot { display: flex; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; color: rgb(241 237 228 / .6); border-top: 1px dashed var(--rule); padding-top: 12px; }
+.slate-foot b { color: var(--chalk); font-weight: 500; }
+.slate-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.clap-btn { padding: 11px 20px; border-radius: 999px; background: var(--chalk); color: #111; font-size: 14px; letter-spacing: .08em; transition: transform .15s, background .2s; }
+.clap-btn:hover { background: #fff; }
+.clap-btn:active { transform: scale(.97); }
+.slate-copy { font-size: 13px; color: rgb(241 237 228 / .7); border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
+.slate-copy:hover { color: var(--chalk); }
+.slate-msg { margin: 0; min-height: 1.2em; font-size: 13px; color: rgb(241 237 228 / .75); line-height: 1.7; }
+.slate-fallback { min-height: 160px; font-family: var(--font-mono); font-size: 12px !important; }
+.hello .stack .inline { border-bottom: 1px solid var(--line); color: var(--fg); overflow-wrap: anywhere; }
+.ab .slate { margin-top: 12px; }
+@media (prefers-reduced-motion: reduce) { .slate.clap .clap-top { animation: none; transform: rotate(0); } }
+/* ---------- related works ---------- */
+.related { padding-top: 56px; border-top: 1px solid var(--line); margin-top: 16px; }
+.rel-grid { padding-bottom: 32px; }
+
 /* ---------- home ---------- */
 #view.home { animation: none; }
 .hero-home { position: relative; height: clamp(520px, 90vh, 940px); overflow: hidden; background: #0c0b0a; color: #f4efe6; }
@@ -461,7 +521,7 @@ header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)
 .services button:hover b { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
 @media (max-width: 860px) { .services { grid-template-columns: repeat(2, minmax(0, 1fr)); } .services button:nth-child(3) { border-left: 0; padding-left: 0; } }
 @media (max-width: 480px) { .services { grid-template-columns: minmax(0, 1fr); } .services button, .services button + button { border-left: 0; padding-left: 0; } }
-.hello { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 56px; align-items: end; padding-bottom: 120px; }
+.hello { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 56px; align-items: start; padding-bottom: 120px; }
 .hello p.big { margin: 0; font-size: clamp(20px, 2.6vw, 28px); line-height: 1.6; text-wrap: balance; }
 .hello p { margin: 0; color: var(--muted); max-width: 52ch; }
 .hello .stack { display: grid; gap: 18px; }
@@ -780,7 +840,7 @@ const WORKS = [
     role: "剪接、段落整理、B-roll 整合、字幕與重點字卡、基礎聲音整理",
     spec: "16:9", duration: "1:44",
     cover: "images/farm-talk.jpg",
-    video: "videos/farm-talk.mp4", poster: "images/farm-talk.jpg",
+    video: "videos/farm-talk.mp4", poster: "images/farm-talk-poster.jpg",
     summary: "把一場實體農業講座（友善農物銷售心法與活菌應用）剪成 1 分 44 秒精華短片，用於社群宣傳和活動、產品認知。",
     notes: [
       { h: "剪接重點", p: [
@@ -893,14 +953,15 @@ function renderHome() {
           <a class="btn" href="#about">關於我 →</a>
         </div>
         <div class="stack">
-          <p>有拍攝或剪接的需求，歡迎來信聊聊。</p>
-          <a class="mail" href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>
+          <p>有拍攝或剪接的需求，填好場記板按「打板」，信件內容會自動帶入；也可以直接寫信到 <a class="inline" href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>。</p>
+          ${slateHTML()}
           <div class="links"><a href="#notes">製作筆記</a><a href="#ai">AI 工作流</a><a href="${esc(SITE.instagram.url)}" target="_blank" rel="noopener">Instagram ↗</a><a href="${esc(SITE.youtube.url)}" target="_blank" rel="noopener">YouTube ↗</a></div>
         </div>
       </section>
     </div>
   `;
   view.querySelectorAll("[data-service]").forEach(b => b.addEventListener("click", () => setFilter(b.dataset.service, true)));
+  bindSlate();
   const v = document.getElementById("reel"), tc = document.getElementById("tc");
   if (v) {
     const p = v.play(); if (p && p.catch) p.catch(() => {});
@@ -913,6 +974,97 @@ function renderHome() {
     };
     cancelAnimationFrame(tcRaf); tick();
   }
+}
+
+
+/* ============================================================
+   場記板聯絡表單：填好後打開郵件程式，信件內容自動帶入
+   ============================================================ */
+const SLATE_TYPES = ["人物訪談", "農業紀實", "活動紀錄", "品牌形象影片", "社群短影音", "空拍", "其他"];
+const SLATE_BUDGET = ["還沒確定", "1 萬以內", "1–3 萬", "3–8 萬", "8 萬以上"];
+function slateHTML() {
+  return `<form class="slate" id="slate" novalidate aria-label="合作洽詢場記板">
+    <div class="clapper" aria-hidden="true"><div class="clap-top"><i></i></div><div class="clap-bottom"><i></i></div></div>
+    <div class="slate-body">
+      <label class="slate-prod"><span>PROD. 片名</span><input id="sl-title" name="title" autocomplete="off" placeholder="片名或專案名稱"></label>
+      <div class="slate-grid">
+        <label><span>SCENE 類型</span><select id="sl-type" name="type">${SLATE_TYPES.map(t => `<option>${t}</option>`).join("")}</select></label>
+        <label><span>DATE 預計拍攝</span><input id="sl-date" name="date" autocomplete="off" placeholder="例：明年 3 月"></label>
+        <label><span>BUDGET 預算</span><select id="sl-budget" name="budget">${SLATE_BUDGET.map(t => `<option>${t}</option>`).join("")}</select></label>
+      </div>
+      <label class="slate-notes"><span>NOTES 需求</span><textarea id="sl-notes" name="notes" rows="3" placeholder="想拍什麼、用在哪個平台、片長或數量"></textarea></label>
+      <div class="slate-grid two">
+        <label><span>NAME 稱呼</span><input id="sl-name" name="name" autocomplete="name"></label>
+        <label><span>CONTACT 聯絡方式</span><input id="sl-contact" name="contact" autocomplete="email" placeholder="Email、電話或 LINE"></label>
+      </div>
+      <div class="slate-foot"><span>DIRECTOR　AMY HUANG</span><span>TAKE <b id="sl-take">01</b></span></div>
+      <div class="slate-actions">
+        <button type="submit" class="clap-btn">打板・寄出 →</button>
+        <button type="button" class="slate-copy" id="sl-copy">複製內容</button>
+      </div>
+      <p class="slate-msg" id="sl-msg" role="status"></p>
+      <textarea class="slate-fallback" id="sl-fallback" readonly hidden aria-label="信件內容，可以全選複製"></textarea>
+    </div>
+  </form>`;
+}
+function bindSlate() {
+  const f = document.getElementById("slate");
+  if (!f) return;
+  const $ = id => document.getElementById(id);
+  const msg = $("sl-msg");
+  let take = 1;
+  const compose = () => {
+    const v = k => $(k).value.trim();
+    const subject = `【作品集洽詢】${v("sl-title") || v("sl-type")}`;
+    const body = [
+      `片名／專案：${v("sl-title") || "（未填）"}`,
+      `類型：${v("sl-type")}`,
+      `預計拍攝：${v("sl-date") || "（未填）"}`,
+      `預算：${v("sl-budget")}`,
+      "",
+      "需求：",
+      v("sl-notes"),
+      "",
+      `稱呼：${v("sl-name") || "（未填）"}`,
+      `聯絡方式：${v("sl-contact") || "（未填）"}`
+    ].join("\n");
+    return { subject, body };
+  };
+  const needNotes = () => {
+    if ($("sl-notes").value.trim()) return false;
+    msg.textContent = "先寫一下需求，再打板。";
+    $("sl-notes").focus();
+    return true;
+  };
+  f.addEventListener("submit", e => {
+    e.preventDefault();
+    if (needNotes()) return;
+    const { subject, body } = compose();
+    f.classList.remove("clap"); void f.offsetWidth; f.classList.add("clap");
+    clearTimeout(f._reopen); f._reopen = setTimeout(() => f.classList.remove("clap"), 1600);
+    $("sl-take").textContent = String(take).padStart(2, "0"); take++;
+    setTimeout(() => { location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`; }, 420);
+    msg.textContent = `正在打開你的郵件程式，信件內容已經填好。如果沒有跳出來，按「複製內容」，再寄到 ${SITE.email}。`;
+  });
+  $("sl-copy").addEventListener("click", () => {
+    if (needNotes()) return;
+    const { subject, body } = compose();
+    const text = `${subject}\n\n${body}`;
+    const fb = $("sl-fallback");
+    const fallback = () => { fb.hidden = false; fb.value = text; fb.focus(); fb.select(); msg.textContent = "自動複製沒有成功，內容已經全選，請按複製。"; };
+    try { navigator.clipboard.writeText(text).then(() => { msg.textContent = `已複製，貼到信件寄到 ${SITE.email} 就可以了。`; }, fallback); } catch (err) { fallback(); }
+  });
+}
+
+/* 作品頁底部的相關作品：分類重疊越多越前面 */
+function relatedTo(w) {
+  const skip = new Set([w.id, ...(w.versions || []).map(v => v[2]).filter(Boolean)]);
+  const order = sorted();
+  return order.filter(x => !skip.has(x.id))
+    .map(x => ({ x, score: (x.tags || []).filter(t => (w.tags || []).includes(t)).length + (x.type === w.type ? 0.5 : 0) }))
+    .filter(r => r.score > 0)
+    .sort((a, b) => b.score - a.score || order.indexOf(a.x) - order.indexOf(b.x))
+    .slice(0, 3).map(r => r.x);
 }
 
 function renderIndex() {
@@ -1025,6 +1177,7 @@ function renderWork(w) {
         <dl>${[["鏡頭", sh.label], ["器材", sh.gear], ["鏡位・光線", sh.setup], ["現場限制", sh.challenge], ["怎麼處理", sh.solution]].filter(r => r[1]).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
       </figure>`).join("")}</div></div>` : ""}
     ${(w.notes || []).map(n => `<section class="note"><h3>${esc(n.h)}</h3>${n.p.map(p => `<p>${esc(p)}</p>`).join("")}</section>`).join("")}
+    ${(() => { const rel = relatedTo(w); return rel.length ? `<section class="related"><div class="sec-head"><h2>相關作品</h2><a href="#works">全部作品 →</a></div><div class="grid rel-grid">${rel.map(card).join("")}</div></section>` : ""; })()}
     <nav class="pager" aria-label="上一件與下一件作品">
       ${prev ? `<a href="#w-${esc(prev.id)}"><small>上一件</small><span>${esc(prev.title)}</span></a>` : "<span></span>"}
       ${next ? `<a href="#w-${esc(next.id)}"><small>下一件</small><span>${esc(next.title)}</span></a>` : "<span></span>"}
@@ -1273,10 +1426,12 @@ function renderAbout() {
               .map(([k, v, href]) => `<div class="contact-row"><dt>${k}</dt><dd>${href ? `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(v)}</a>` : esc(v)}</dd>${k === "信箱" ? `<button type="button" class="copy" data-copy="${esc(v)}">複製</button>` : "<span></span>"}</div>`).join("")}
           </dl>
           <p class="hint">詢問時可以附上：素材連結、用途平台、期望片長與數量、交期、參考風格 1–2 支。通常 24 小時內回覆。</p>
+          ${slateHTML()}
         </div>
       </section>
     </div>
   `;
+  bindSlate();
   view.querySelectorAll("[data-jump]").forEach(b => b.addEventListener("click", () => {
     const t = document.getElementById(b.dataset.jump);
     if (t) t.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
@@ -1307,6 +1462,8 @@ function route() {
   const curWork = page === "work" ? WORKS.find(x => x.id === h.slice(2)) : null;
   const full = page === "home" || page === "work";
   view.className = page === "home" ? "home" : (full ? "" : "wrap");
+  const T = { home: "Amy Huang｜人物紀實・現場攝影・空拍", index: "全部作品｜Amy Huang", about: "關於｜Amy Huang", ai: "AI 用在哪裡｜Amy Huang", notes: "製作筆記｜Amy Huang" };
+  document.title = curWork ? `${curWork.title}｜Amy Huang` : (T[page] || T.home);
   document.body.classList.toggle("on-hero", page === "home" || !!(curWork && isCine(curWork)));
   document.body.classList.toggle("on-cine", !!(curWork && isCine(curWork)));
   closeMenu();
