@@ -416,6 +416,9 @@ header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)
 .nbody p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.85; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 .ncard:hover h2 { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
 .ncard .note-link { justify-self: start; }
+.nsub { display: grid; gap: 4px; padding-left: 12px; border-left: 2px solid var(--line); }
+.nsub b { font-size: 13px; font-weight: 500; color: var(--fg); }
+.nsub p { -webkit-line-clamp: 3 !important; }
 .grid .card { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
 .grid .card:nth-child(2) { animation-delay: 60ms; } .grid .card:nth-child(3) { animation-delay: 120ms; }
 .grid .card:nth-child(4) { animation-delay: 180ms; } .grid .card:nth-child(5) { animation-delay: 240ms; } .grid .card:nth-child(n+6) { animation-delay: 300ms; }
@@ -1213,12 +1216,14 @@ function renderNotes() {
       <p class="lede">每件作品背後的拍攝、剪接與判斷，從 ${new Set(items.map(i => i.w.id)).size} 件作品整理出 ${items.length} 則筆記。</p>
     </div>
     <div class="ngrid">
-      ${items.map(({ w, n }, k) => `<a class="ncard" href="#w-${esc(w.id)}" style="--i:${k}">
-        <div class="frame"><img src="${esc(w.cover)}" alt="" loading="lazy"><span class="ntag">${esc(n.h)}</span></div>
+      ${sorted().filter(w => (w.notes || []).length).map((w, k) => `<a class="ncard" href="#w-${esc(w.id)}" style="--i:${k}">
+        <div class="frame"><img src="${esc(w.cover)}" alt="" loading="lazy"><span class="ntag">${w.notes.length > 1 ? `${w.notes.length} 則筆記` : esc(w.notes[0].h)}</span></div>
         <div class="nbody">
           <div class="note-meta">${w.year ? `<span class="tc">${w.year}</span>` : ""}<span>${esc((w.tags || [])[0] || "")}</span></div>
           <h2>${esc(w.title)}</h2>
-          <p>${esc(n.p.join(""))}</p>
+          ${w.notes.length > 1
+            ? w.notes.map(n => `<div class="nsub"><b>${esc(n.h)}</b><p>${esc(n.p.join(""))}</p></div>`).join("")
+            : `<p>${esc(w.notes[0].p.join(""))}</p>`}
           <span class="note-link">看這件作品 →</span>
         </div>
       </a>`).join("")}
