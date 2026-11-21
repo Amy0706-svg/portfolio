@@ -305,6 +305,33 @@ header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)
 @media (max-width: 480px) { .kv li, .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
 .ab .contact { max-width: 560px; }
 
+
+/* ---------- AI workflow + notes ---------- */
+.ab-row h2 .tc { color: var(--accent); font-weight: 400; margin-right: 6px; letter-spacing: .04em; }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 6px; font-size: 12px; color: var(--muted); }
+.legend .tc { margin-right: 14px; }
+.chip { display: inline-grid; place-items: center; min-width: 3.4em; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; letter-spacing: .08em; border: 1px solid currentColor; white-space: nowrap; }
+.chip.ai { color: var(--accent); }
+.chip.tpl { color: var(--fg); opacity: .75; border-style: dashed; }
+.chip.hand { color: var(--muted); }
+.flow { list-style: none; margin: 4px 0 0; padding: 0; display: grid; counter-reset: f; }
+.flow li { display: grid; grid-template-columns: 2rem 4.4rem minmax(0, 1fr); align-items: start; gap: 12px; padding-block: 11px; border-bottom: 1px dashed var(--line); counter-increment: f; }
+.flow li::before { content: counter(f, decimal-leading-zero); font-family: var(--font-mono); font-size: 12px; color: var(--muted); padding-top: 3px; }
+.flow li:last-child { border-bottom: 0; }
+.flow li > span:last-child { line-height: 1.8; }
+.flow li.ai > span:last-child { color: var(--fg); }
+@media (max-width: 480px) { .flow li { grid-template-columns: 1.6rem minmax(0, 1fr); } .flow li .chip { grid-column: 2; justify-self: start; } .flow li > span:last-child { grid-column: 2; } }
+.notes-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 56px; padding-bottom: 120px; border-top: 1px solid var(--line); }
+@media (max-width: 860px) { .notes-list { grid-template-columns: minmax(0, 1fr); } }
+.note-item { display: grid; gap: 12px; align-content: start; padding-block: 36px; border-bottom: 1px solid var(--line); min-width: 0; }
+.note-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.note-meta a:hover { color: var(--fg); }
+.note-meta .tc { color: var(--accent); }
+.note-item h2 { margin: 0; font-size: 18px; font-weight: 500; line-height: 1.5; }
+.note-item p { margin: 0; line-height: 1.95; opacity: .9; max-width: 60ch; }
+.note-link { justify-self: start; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); }
+.note-link:hover { color: var(--fg); border-color: var(--fg); }
+
 /* ---------- home ---------- */
 #view.home { animation: none; }
 .hero-home { position: relative; height: clamp(520px, 90vh, 940px); overflow: hidden; background: #0c0b0a; color: #f4efe6; }
@@ -384,7 +411,9 @@ header .wrap { padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 20px)
     <nav class="menu-links" aria-label="主選單">
       <a href="#" data-nav="home"><small>01</small>首頁</a>
       <a href="#works" data-nav="index"><small>02</small>作品</a>
-      <a href="#about" data-nav="about"><small>03</small>關於</a>
+      <a href="#notes" data-nav="notes"><small>03</small>筆記</a>
+      <a href="#ai" data-nav="ai"><small>04</small>AI 工作流</a>
+      <a href="#about" data-nav="about"><small>05</small>關於</a>
     </nav>
     <div class="menu-foot" id="menu-foot"></div>
   </div>
@@ -767,7 +796,7 @@ function renderHome() {
         <div class="stack">
           <p>有拍攝或剪接的需求，歡迎來信聊聊。</p>
           <a class="mail" href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>
-          <div class="links"><a href="${esc(SITE.instagram.url)}" target="_blank" rel="noopener">Instagram ↗</a><a href="${esc(SITE.youtube.url)}" target="_blank" rel="noopener">YouTube ↗</a></div>
+          <div class="links"><a href="#notes">製作筆記</a><a href="#ai">AI 工作流</a><a href="${esc(SITE.instagram.url)}" target="_blank" rel="noopener">Instagram ↗</a><a href="${esc(SITE.youtube.url)}" target="_blank" rel="noopener">YouTube ↗</a></div>
         </div>
       </section>
     </div>
@@ -964,6 +993,92 @@ const ABOUT = {
   area: "北部，可遠端合作"
 };
 
+/* ============================================================
+   AI 工作流頁的內容（來源：Notion 的 Podcast 剪輯 SOP、撈素材紀錄、AI 顧問對話）
+   tag: "ai" 用 AI ／ "tpl" 用模板 ／ "hand" 人工
+   ============================================================ */
+const AI_PAGE = {
+  lede: "AI 負責整理和粗活，鏡頭、敘事和最後的判斷由我來。以下是我實際在用的流程，每一步都標出是誰在做。",
+  flows: [
+    { title: "訪談與 Podcast 剪輯", note: "固定業主的 Podcast 剪輯，照這份 SOP 走，每集處理時間更穩定。", steps: [
+      ["hand", "下載音檔、建立專案資料夾、統一檔名"],
+      ["tpl", "快速聽一次，標記問題段，初剪並套上片頭片尾"],
+      ["ai", "輸出文字稿，產生字幕"],
+      ["hand", "再快速聽一次，檢查字幕和內容"],
+      ["hand", "輸出、檢查後交付"]
+    ]},
+    { title: "長片拆成短影音", note: "一支長片可以拆出好幾支短影音。AI 先幫我縮小範圍，挑哪一段、怎麼剪還是我決定。", steps: [
+      ["hand", "下載含時間軸的長片字幕"],
+      ["ai", "請 AI 從字幕整理出 6 到 10 段候選段落"],
+      ["hand", "回到畫面確認，挑選段落並剪成短版"],
+      ["hand", "輸出、檢查後交付"]
+    ]},
+    { title: "照腳本整理大量素材", note: "接手別人拍的素材時，檔案常常很亂。我用 AI 先把素材對上腳本，再開始剪。", steps: [
+      ["ai", "只列出資料夾結構和檔名，先不讀內容"],
+      ["hand", "圈出和這支片有關的資料夾"],
+      ["ai", "分批讀取，每個檔案用一句話說明內容、對應腳本哪一段"],
+      ["ai", "整理成「檔名／內容／腳本段落」對照表"],
+      ["hand", "腳本經過確認後，才標時間點、進時間軸剪接"]
+    ]},
+    { title: "把 AI 對話變成下一步", note: "跟 AI 討論企劃、職涯或接案問題後，我不收藏整段對話，只在 Notion 留三行：學到什麼、決定什麼、下一步做什麼，並排上日期。", steps: [
+      ["ai", "和 AI 討論問題、整理想法"],
+      ["hand", "寫下一句話結論和做出的決定"],
+      ["hand", "訂出可以排進行事曆的下一步"],
+      ["hand", "每週回顧：完成、延期或刪掉"]
+    ]}
+  ],
+  rules: [
+    ["AI 不替我拍，也不替我決定敘事", "鏡頭、光線、受訪者的狀態，都只能在現場處理。AI 用在拍攝前後的整理工作。"],
+    ["客戶素材只讀需要的部分", "公司或客戶的素材，只讓 AI 讀這次需要的資料夾，不把內容上傳，做完就斷開。"],
+    ["先跑順，再固定成流程", "一個流程確定好用，才把它寫成 SOP，一次只固定一個。"]
+  ],
+  tools: "ChatGPT · Notion AI · Codex · Midjourney"
+};
+const TAG_LABEL = { ai: "AI", tpl: "模板", hand: "人工" };
+
+function renderAI() {
+  const count = t => AI_PAGE.flows.reduce((n, f) => n + f.steps.filter(s => s[0] === t).length, 0);
+  view.innerHTML = `
+    <div class="page-head">
+      <div class="eyebrow"><span>${esc(SITE.name)}</span><b>AI WORKFLOW</b></div>
+      <h1>AI 用在哪裡</h1>
+      <p class="lede">${esc(AI_PAGE.lede)}</p>
+      <div class="legend">${["ai", "tpl", "hand"].map(t => `<span class="chip ${t}">${TAG_LABEL[t]}</span><span class="tc">${count(t)} 步</span>`).join("")}</div>
+    </div>
+    <div class="ab">
+      ${AI_PAGE.flows.map((f, i) => `<section class="ab-row"><h2><span class="tc">${String(i + 1).padStart(2, "0")}</span> ${esc(f.title)}</h2>
+        <div class="ab-body">
+          <p>${esc(f.note)}</p>
+          <ol class="flow">${f.steps.map(([t, txt]) => `<li class="${t}"><span class="chip ${t}">${TAG_LABEL[t]}</span><span>${esc(txt)}</span></li>`).join("")}</ol>
+        </div></section>`).join("")}
+      <section class="ab-row"><h2>我的原則</h2>
+        <ul class="kv">${AI_PAGE.rules.map(([k, v]) => `<li><b>${esc(k)}</b><span>${esc(v)}</span></li>`).join("")}</ul>
+      </section>
+      <section class="ab-row"><h2>常用工具</h2><div class="ab-body"><p class="skills">${esc(AI_PAGE.tools)}</p></div></section>
+    </div>
+  `;
+}
+
+function renderNotes() {
+  const items = [];
+  sorted().forEach(w => (w.notes || []).forEach(n => items.push({ w, n })));
+  view.innerHTML = `
+    <div class="page-head">
+      <div class="eyebrow"><span>${esc(SITE.name)}</span><b>NOTES</b></div>
+      <h1>製作筆記</h1>
+      <p class="lede">每件作品背後的拍攝、剪接與判斷，從作品頁整理出來的 ${items.length} 則筆記。</p>
+    </div>
+    <div class="notes-list">
+      ${items.map(({ w, n }) => `<article class="note-item">
+        <div class="note-meta">${w.year ? `<span class="tc">${w.year}</span>` : ""}<a href="#w-${esc(w.id)}">${esc(w.title)}</a></div>
+        <h2>${esc(n.h)}</h2>
+        ${n.p.map(t => `<p>${esc(t)}</p>`).join("")}
+        <a class="note-link" href="#w-${esc(w.id)}">看這件作品 →</a>
+      </article>`).join("")}
+    </div>
+  `;
+}
+
 function renderAbout() {
   const sections = [
     ["milestones", "里程碑"], ["name", "初衷"], ["me", "我"], ["services", "服務"],
@@ -1030,6 +1145,8 @@ function route() {
   let page = "home";
   cancelAnimationFrame(tcRaf);
   if (h === "about") { renderAbout(); page = "about"; }
+  else if (h === "ai") { renderAI(); page = "ai"; }
+  else if (h === "notes") { renderNotes(); page = "notes"; }
   else if (h === "works") { renderIndex(); page = "index"; }
   else if (h.startsWith("w-")) {
     const w = WORKS.find(x => x.id === h.slice(2));
